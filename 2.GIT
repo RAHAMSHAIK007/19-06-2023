@@ -1,0 +1,66 @@
+SVN IS CENTRALIZED VERSION CONTROL SYSTEM HERE YOU CAN STORE SOURCE CODE ON SINGLE PLACE ONLY.
+GIT IS DISTRIBUTED VERSION CONTROL SYSTEM HERE YOU CAN STORE SOURCE CODE ON MULTIPLE PLACES.
+
+ROLLBACK MEANS GOING BACK TO THE PREVIOUS VERSION. (CURRUNET V-3 -- > V-2)
+
+STAGES: 3
+1. WORKING DIRECTORY	: Develope the code
+2. STAGING AREA		: The files are tracked here
+3. REPOSITORY		: The files are Stored here
+
+TYPES OF REPO:
+1. LOCAL	: on our local
+2. REMOTE	: on some remote location
+3. CENTRAL	: on internet
+
+INSTALLATION:
+yum install git -y	{yum=package manager install=action git=package -y=permission}
+git --version / git -v
+git init : Initialized empty Git repository (.git)
+
+
+touch java1	: to create a file
+git status	: to show the file is tracking or not.
+git add java1	: to track the file
+git status	: to show the file is tracking or not.
+git commit -m "" java1: to store the file on .git repo.
+git log		: to show the commits history.
+
+CONFIGURING USER & EMAIL:
+
+git config user.name "raham"
+git config user.email "raham@gmail.com"
+
+HISTORY:
+   1  mkdir swiggy
+    2  cd swiggy/
+    3  yum install git -y
+    4  git --version
+    5  git -v
+    6  ls -al
+    7  git init
+    8  ls -al
+    9  ll
+   10  touch java1
+   11  git status
+   12  git add java1
+   13  git status
+   14  git commit -m "commit1" java1
+   15  git status
+   16  git logs
+   17  git log
+   18  touch java2
+   19  git status
+   20  git add java2
+   21  git status
+   22  git commit -m "commit2" java2
+   23  git status
+   24  git log
+   25  git config user.name "raham"
+   26  git config user.email "raham@gmail.com"
+   27  git log
+   28  touch java3
+   29  git add java3
+   30  git commit -m "commit3" java3
+   31  git log
+   32  history
