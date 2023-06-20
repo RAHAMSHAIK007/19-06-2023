@@ -64,3 +64,95 @@ HISTORY:
    30  git commit -m "commit3" java3
    31  git log
    32  history
+
+DAY-02:
+DAY-02: BRANCHES
+Used to develope the source code individually.
+we can create, delete, rename, switch and list the branches.
+individual developers will work on individual branches.
+without .git folder (local repo) our commands will not work.
+Default branch in git is master.
+
+git branch 		: to list the branchs
+git branch branchname	: to create a branch called movies
+git checkout branchname	: to switch one branch to another
+git checkout -b branchname: to create and switch at a single time
+
+
+GITHUB:
+
+
+Create a repo
+git remote add origin https://github.com/prashanthikunchakuri22/paytm.git
+git push origin master
+
+
+from aug 2021 github removed the password for pushing the files.
+so here we need to use the tokens.
+
+settings -- > Developer settings -- > Personal access tokens -- > classic -- > generate token -- > select options -- > save
+
+Note: it will be visible only once.
+
+  2  mkdir paytm
+    3  cd paytm/
+    4  touch index.html
+    5  git status
+    6  git init
+    7  git status
+    8  git add index.html
+    9  git status
+   10  git commit -m "commit-1" index.html
+   11  git status
+   12  git branch
+   13  git branch movies
+   14  git branch
+   15  git checkout movies
+   16  ll
+   17  touch movies{1..5}
+   18  ll
+   19  git status
+   20  git add *
+   21  git status
+   22  git commit -m "dev-1" *
+   23  git status
+   24  ll
+   25  git branch
+   26  git branch train
+   27  git branch
+   28  ll
+   29  git checkout train
+   30  ll
+   31  touch train{1..5}
+   32  git status
+   33  git add *
+   34  git status
+   35  git commit -m "dev-2" *
+   36  git log
+   37  git branch
+   38  git checkout -b dth
+   39  git branch
+   40  ll
+   41  touch dth{1..5}
+   42  git status
+   43  git add *
+   44  git status
+   45  git commit -m "dev-3" *
+   46  ll
+   47  git branch
+   48  git checkout -b recharge
+   49  ll
+   50  touch recharge{1..5}
+   51  git add *
+   52  git commit -m "dev-4" *
+   53  ll
+   54  ls -al
+   55  git checkout master
+   56  git branch
+   57  git remote add origin https://github.com/prashanthikunchakuri22/paytm.git
+   58  git push origin master
+   59  git push origin movies
+   60  git push origin train
+   61  git push origin dth
+   62  git push origin recharge
+   63  history
