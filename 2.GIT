@@ -156,3 +156,120 @@ Note: it will be visible only once.
    61  git push origin dth
    62  git push origin recharge
    63  history
+
+
+DAY-03:
+
+git log			: to show the logs
+git log --oneline	: to show the logs in single line
+git log --oneline -2	: to show the last 2 logs in single line
+git show commit_id	: to show the number of files commited to the commit 
+git diff cm_id1 cm_id2	: to show the difference blw two commits
+
+
+MERGE : Used to merge files on two different branches
+git checkout master
+git merge branchname
+
+REBASE : Used to merge files on two different branches
+git checkout master
+git merge branchname
+
+REVERT: To undo the Merging.
+git revert branch_name 
+
+
+HISTOYR:
+
+  2  cd paytm/
+    3*
+    4  git branch
+    5  git status
+    6  git init
+    7  git status
+    8  git branch
+    9  touch index.html
+   10  git add index.html
+   11*
+   12  git branch
+   13  git branch movies
+   14  git branch
+   15  git checkout movies
+   16  ll
+   17  touch novies{1..5}
+   18  git add *
+   19  git com it -m "dev-1" *
+   20  git commit -m "dev-1" *
+   21  git branch
+   22  git checkout -b train
+   23  touch train{1..5}
+   24  git add *
+   25  git commit -m "dev-1" *
+   26  git checkout -b dth
+   27  touch dth{1..5}
+   28  git add *
+   29  git commit -m "dev-3" *
+   30  git checkout -b recharge
+   31  git add *
+   32  git commit -m "dev-4" *
+   33  touch recharge{1..5}
+   34  git add *
+   35  git commit -m "dev-4" *
+   36  git log
+   37  git log --oneline
+   38  git log --oneline -2
+   39  git log --oneline -3
+   40  git log --oneline
+   41  git show efd143d
+   42  git show dev-4
+   43  git log --help
+   44  git log
+   45  git log --oneline
+   46  git diff efd143d f4a8766
+   47  git diff efd143d 7e80f59
+   48  git checkout master
+   49  ll
+   50  git merge movies
+   51  ll
+   52  git merge train
+   53  ll
+   54  git rebase dth
+   55  ll
+   56  git rebase recharge
+   57  ll
+   58  git revert recharge
+   59  ll
+   60  git revert
+   61  git revert  dth
+   62  ll
+   63  git undo train
+   64  git reset train
+   65  ll
+   66  git log
+   67  git branch
+   68  git checkout recharge
+   69  git log
+   70  git checkout master
+   71  ll
+   72  git revert train
+   73  git revert movies
+   74  ll
+   75  git remote add origin https://github.com/RAHAMSHAIK007/deletemenlater.git
+   76  git push origin master
+   77  git push origin movies
+   78  git push origin train
+   79  git push origin dth
+   80  git push origin recharge
+   81  git push origin movies
+   82  git branch
+   83  git branch -d movies
+   84  git branch
+   85  git restore movies
+   86  git restore --help
+   87  git branch
+   88  git branch -m recharge raham
+   89  git branch
+   90  git branch -m train abcd
+   91  git branch
+   92  history
+
