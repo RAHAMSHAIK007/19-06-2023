@@ -273,3 +273,144 @@ HISTOYR:
    91  git branch
    92  history
 
+
+
+MERGE CONFLICT: When two different branches merged with common files and different code 
+this can be resolved manually.
+
+GIT STASH: To hide the files temperorly.
+
+git stash	: To hide the file
+git stash apply	: To un-hide the file
+git stash list	: To get list of stashes
+git stash pop	: To remove the last stash
+git stash clear	: To remove all the stash
+
+CHERRY-PICK: To merge the files with specific commits.
+
+git show commit-id
+git cherry-pick commit-id
+
+
+CLONE: To use the repository on local. 
+FORK: To use the repository on github.
+
+PUSH: To send files from local to github.
+PULL: To get changes of files from Github to local.
+FETCH: To show the changes from central to local.
+
+
+1. LOCAL REPO VS CENTRAL REPO
+2. MERGE VS REBASE
+3. MERGE VS CHERRY-PICK
+4. PULL VS PUSH
+5. PULL VS CLONE
+6. PULL VS FETCH
+
+RESTORE: To make a file untracked
+git restore --staged file10
+
+    1  mdkir abcd
+    2  mkdir swiggy
+    3  cd swiggy/
+    4  yum install git -y
+    5  git init
+    6  git branch -m branch1
+    7  vim file1
+    8  git add file1
+    9  git commit -m "dev-1" file1
+   10  git branch
+   11  git checkout -b branch2
+   12  ll
+   13  vim file1
+   14  git add file1
+   15  git commit -m "dev-2" file1
+   16  git checkout branch1
+   17  vim file1
+   18  git add file1
+   19  git commit -m "dev-1 2.0 commits" file1
+   20  cat file1
+   21  git checkout branch2
+   22  cat file1
+   23  git checkout branch1
+   24  git merge branch2
+   25  vim file1
+   26  git add file1
+   27  git commit -m "new code" file1
+   28  git commit -m "new code"
+   29  cat file1
+   30  git status
+   31  cd
+   32  mkdir raham
+   33  cd raham/
+   34  git init
+   35  touch file1
+   36  git add file1
+   37  git commit -m "one" file1
+   38  git branch
+   39  ll
+   40  touch file2
+   41  git add file2
+   42  ll
+   43  git stash
+   44  ll
+   45  git stash apply
+   46  ll
+   47  git stash list
+   48  git stash pop
+   49  cd
+   50  mkdir abcde
+   51  cd abcde/
+   52  git init
+   53  git branch -m branch1
+   54  touch index.html
+   55  git add index.html
+   56  git commit -m "one" index.html
+   57  git checkout -b branch2
+   58  ll
+   59  touch java{1..5}
+   60  git add *
+   61  git commit -m "java" *
+   62  touch python{1..5}
+   63  git add *
+   64  git commit -m "python" *
+   65  git log --oneline
+   66  ls
+   67  git checkout branch1
+   68  ll
+   69  git show 694a8ed
+   70  git cherry-pick 694a8ed
+   71  ll
+   72  git show 92e32f0
+   73  git cherry-pick  92e32f0
+   74  git log
+   75  cd
+   76  ll
+   77  git clone https://github.com/RAHAMSHAIK007/linux.git
+   78  ll
+   79  git clone https://github.com/RAHAMSHAIK007/11ambatch2023.git
+   80  ll
+   81  cd 11ambatch2023/
+   82  ll
+   83  ls
+   84  cat file1
+   85  cat abcd
+   86  vim abcd
+   87  git pull
+   88  cat abcd
+   89  git pull
+   90  cat abcd
+   91  git fetch
+   92  cat abcd
+   93  git pull
+   94  cat abcd
+   95  git push origin main
+   96  touc file10
+   97  touch file10
+   98  git status
+   99  git add file10
+  100  git status
+  101  git restore --staged file10
+  102  git status
+  103  history
+
