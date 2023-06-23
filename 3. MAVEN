@@ -1,0 +1,89 @@
+MAVEN:
+1. CREATING A SERVER
+2. DOWNLOADING THE REPO (https://dlcdn.apache.org/)
+
+wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+tar -zxvf apache-maven-3.8.8-bin.tar.gz
+cd apache-maven-3.8.8
+
+3. INSTALLING JAVA-1.8.0
+yum install java-1.8.0-openjdk -y
+
+4. INSTALL MAVEN 
+yum install maven -y
+mvn --version
+
+WORKING WITH MAVEN:
+
+mvn archetype:generate
+
+Confirm properties configuration:
+groupId: raham
+artifactId: swiggy
+version: 1.0-SNAPSHOT
+package: devops
+ Y: : y
+
+cd swiggy
+
+GOALS: its a maven commands which performs the task.
+yum install tree -y
+
+mvn compile	: to compile the source code (App.java-- > App.class)
+mvn test	: to test the source code (AppTest.java -- > Apptest.class)
+mvn package	: to generate the jar file project folder
+mvn install	: to generate the jar file maven homepath
+mvn deploy	: to generate the war file
+mvn clean	: to delete the target folder
+
+HISTORY:
+ 1  ll
+    2  wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+    3  ll
+    4  tar -zxv apache-maven-3.8.8-bin.tar.gz
+    5  tar -zxvf apache-maven-3.8.8-bin.tar.gz
+    6  ll
+    7  cd apache-maven-3.8.8/
+    8  ll
+    9  yum install java-1.8.0-openjdk -y
+   10  yum install maven -y
+   11  mvn --version
+   12  ll
+   13  mvn archetype:generate
+   14  ll
+   15  cd swiggy/
+   16  ll
+   17  yum install tree -y
+   18  ll
+   19  tree
+   20  cat src/main/java/devops/App.java
+   21  cat pom.xml
+   22  mvn compile
+   23  ll
+   24  tree
+   25  mvn test
+   26  tree
+   27  mvn package
+   28  tree
+   29  mvn install
+   30  cd /root/.m2/repository/raham/swiggy/1.0-SNAPSHOT/
+   31  ll
+   32  pwd
+   33  mvn deploy
+   34  cd -
+   35  mvn deploy
+   36  ll
+   37  mvn clean
+   38  ll
+   39  tree
+   40  mvn compile
+   41  tree
+   42  mvn test
+   43  tree
+   44  mvn package
+   45  mvn install
+   46  mvn deploy
+   47  mvn clean
+   48  ll
+   49  mvn install
+   50  ll
