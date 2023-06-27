@@ -1,0 +1,58 @@
+DAT-01:
+
+JENKINS:
+
+its  a cicd too1.
+ci - continous integration 	: continous build + continous test
+cd - continous delivery 	: manual deployment to production
+cd - continous deployment 	: automation deployment to production
+
+ENV:
+DEV	- Developers
+TEST	- Testers
+UAT	- Client
+PROD	- User (live)
+
+PIPELINE: 
+series of events interlinked with each other.
+step by step execution of a process.
+
+JENKINS:
+Jenkins is a free and opensource tool.
+jenkins is a platform independent.
+jenkins -- > java 11/17
+written by Kohsuke Kawaguchi on java platform.
+it has the community supports.
+jenkins was developed as a part of sunmicro systemts
+it was paid version while the name as hudson.
+but later oracle brought this and made free.
+it has the plugins support.
+jenkins works on port 8080.
+
+dev -- > gitthub --- > ci (jenkins) -- > build test & deploy.
+
+SETUP:
+
+#STEP-1: INSTALLING GIT JAVA-1.8.0 MAVEN 
+yum install git java-1.8.0-openjdk maven -y
+
+#STEP-2: GETTING THE REPO (jenkins.io --> download -- > redhat)
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+#STEP-3: DOWNLOAD JAVA11 AND JENKINS
+amazon-linux-extras install java-openjdk11 -y
+yum install jenkins -y
+update-alternatives --config java
+
+#STEP-4: RESTARTING JENKINS (when we download service it will on stopped state)
+systemctl start jenkins.service
+systemctl status jenkins.service
+
+pulbic-ip:8080
+
+
+CI JOB:
+new time -- > name -- < freestyle -- > Source Code Management: git -- > repo: https://github.com/devopsbyraham/jenkins-java-project.git -- > save -- > build now 
+
+configure -- > Build Steps  -- > invoke top level maven target -- > goal: test -- > save
