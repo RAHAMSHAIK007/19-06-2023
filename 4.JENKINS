@@ -56,3 +56,41 @@ CI JOB:
 new time -- > name -- < freestyle -- > Source Code Management: git -- > repo: https://github.com/devopsbyraham/jenkins-java-project.git -- > save -- > build now 
 
 configure -- > Build Steps  -- > invoke top level maven target -- > goal: test -- > save
+
+======================================
+
+DAY-02:
+
+VARIABLES:
+It can hold the data 
+it can be vary as the per the time.
+
+a=2
+
+USERDEFINED:
+1. LOCAL VARS: it will work inside the job
+
+b=7
+name=raham
+loc=hyderabad
+echo "the name is $name, $name is from $loc"
+
+
+2. GLOBAL VARS: outside of the job
+
+Dashboarb -- > Manage Jenkins -- > System -- >  Global properties -- > Environment variables
+Add -- > name: raham -- > add -- > loc: mumbai
+
+echo "the name is $name, $name is from $loc"
+
+PORT NUMBER CHANGING:
+cd /usr/lib/systemd/system
+vim jenkins.service -- > 67 -- > 8080 = 8084 -- ? :wq
+systemctl daemon-reload
+systemctl restart jenkins
+
+PASSWORDLESS LOGIN:
+cd /var/lib/jenkins/
+vim config.xml -- > line 7 -- > true=false -- > :wq
+systemctl restart jenkins
+
