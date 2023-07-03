@@ -94,3 +94,63 @@ cd /var/lib/jenkins/
 vim config.xml -- > line 7 -- > true=false -- > :wq
 systemctl restart jenkins
 
+=========================
+
+day-03:
+
+vim jenkins.sh
+
+#STEP-1: INSTALLING GIT JAVA-1.8.0 MAVEN 
+yum install git java-1.8.0-openjdk maven -y
+
+#STEP-2: GETTING THE REPO (jenkins.io --> download -- > redhat)
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+#STEP-3: DOWNLOAD JAVA11 AND JENKINS
+amazon-linux-extras install java-openjdk11 -y
+yum install jenkins -y
+update-alternatives --config java
+
+#STEP-4: RESTARTING JENKINS (when we download service it will on stopped state)
+systemctl start jenkins.service
+systemctl status jenkins.service
+
+-------------------------------------
+:wq : to save
+
+sh jenkins.sh : to execute
+
+PARAMETERS:
+Giving/passing input for the job to run.
+
+
+configure -- > This project is parameterized -- > add parameters -- > choice 
+
+1. choice : to pass input from given choices
+2. string : to pass input dyamically
+3. Muti-line string : to pass the input on multiple lines
+4. File : to build the local files
+5. Boolean: it give true or flase
+
+
+JENKINS ENVIRONMENT VARIABLES:
+these values is given by jenkins based on builds.
+it cannot be defined by user.
+
+
+echo "
+The build number is $BUILD_NUMBER, 
+The job name is $JOB_NAME
+The build url is $BUILD_URl
+the commit id is $GIT_COMMIT
+the branch name is $GIT_BRANCH
+The server is $JENKINS_URL
+"
+
+LINKED JOBS: if one job is depended on another job.
+
+create ci job git: repo -- > invoke top level maven targets -- > clean package -- > post build action -- >  Build other projects: swiggypipeline
+
+1. up stream
+2. down stream
