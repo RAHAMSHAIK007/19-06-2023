@@ -154,3 +154,208 @@ create ci job git: repo -- > invoke top level maven targets -- > clean package -
 
 1. up stream
 2. down stream
+
+===============================================================================================================================
+
+CRON JOBS: used to schedule the works.
+
+9:15 am 05-07-2023 
+
+*	: minutes
+*	: hours
+*	: date
+*	: month
+*	: day of week (sun-0)
+
+creat ci pipeline
+
+configure -- > Build Triggers -- > Build periodically -- > * *  4 7 2 -- > save 
+(wait for one minute)
+
+POLLSCM: it will make a build if the source is changed on given time.
+
+creat ci pipeline
+
+configure -- > Build Triggers -- > Poll SCM -- > * *  4 7 2 -- > save 
+(wait for one minute)
+
+WEBHOOK: It will make a build automatically when developer commited the code.
+
+github -- > select the repo -- > settings -- > webhook -- > add webhook -- > password -- >
+Payload URL: http://44.204.25.245:8080/github-webhook/ -- > Content type: applivation/json -- > add webhook
+
+creat ci pipeline
+configure -- > Build Triggers -- > GitHub hook trigger for GITScm polling -- > save 
+
+
+THROTTLE BUILD: To restrict the builds
+
+===============================================================================================
+
+PIPELINES: 
+step by step execution of a process.
+series of events interlinked with eachother.
+
+
+types:
+1. scripted 
+2. declarative
+
+
+scripted:
+node {
+    stage('abc') {
+        echo "hai all"
+    }
+}
+
+declarative:
+pipeline {
+    agent any
+    
+    stages {
+        stage('one') {
+            steps {
+               echo "hello all good moning"
+            }
+        }
+    }
+}
+
+NOTE: SHORTCUT FOR DECLARATIVE IS PASSS.
+
+MULTI STAGE PIPELINE: it has more than one stage
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('one') {
+            steps {
+               echo "hello all good moning"
+            }
+        }
+        stage("two") {
+            steps {
+                sh 'touch file1'
+            }
+        }
+        stage('cpu') {
+            steps {
+                sh 'lscpu'
+            }
+        }
+    }
+}
+
+PIPELINE AS A CODE: we can write all the commands on single stage
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh 'touch file2'
+                sh 'lsmem'
+                sh 'lscpu'
+            }
+        }
+    }
+}
+
+MULTI STAGE PIPELINE AS A CODE: we can write multiple commands on multiple stage
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh 'touch file2'
+                sh 'lsmem'
+                sh 'lscpu'
+            }
+        }
+        stage("two") {
+            steps {
+                sh 'uname'
+                sh 'hostname -i'
+            }
+        }
+    }
+}
+
+PIPELINE AS A CODE OVER SINGLE LINE:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh '''
+                lscpu
+                touch file3
+                lsmem
+                '''
+            }
+        }
+        stage("two") {
+            steps {
+                sh '''
+                uname 
+                hostname -i
+                '''
+            }
+        }
+    }
+}
+
+CI CD PILINE:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("checkout") {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage("artifact") {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+
+----------------------------------------------------
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+                sh 'mvn compile'
+                sh 'mvn test'
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
