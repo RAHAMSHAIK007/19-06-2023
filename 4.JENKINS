@@ -359,3 +359,130 @@ pipeline {
     }
 }
 
+
+==========================================================================================
+
+DAY-04:
+
+INPUT PARAMETER:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('artifact') {
+            input {
+                message "do you want to create artifact"
+                ok "yes"
+            }
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+VARIABLES IN PIPELINE:
+
+pipeline {
+    agent any 
+    environment {
+        name = 'raham'
+        loc = "hyderabad"
+        client = 'tcs'
+    }
+    
+    stages {
+        stage("one") {
+            steps {
+                echo "hai all my name is $name, $name is from $loc, $name is working for $client"
+                echo "the build number is $BUILD_NUMBER, the job name is $JOB_NAME"
+            }
+        }
+    }
+}
+
+TO PRINT ALL THE VARS IN PIPELINE: printenv
+pipeline {
+    agent any
+
+    stages {
+        stage('ENV') {
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}
+
+
+PARAMETERS:
+
+pipeline {
+    agent any 
+    environment {
+        name = 'raham'
+        loc = "hyderabad"
+        client = 'tcs'
+    }
+    
+    parameters {
+        choice(name:'server',choices:['a','b','c'])
+    }
+    stages {
+        stage("one") {
+            steps {
+                echo "hai all my name is $name, $name is from $loc, $name is working for $client"
+                echo "the build number is $BUILD_NUMBER, the job name is $JOB_NAME"
+            }
+        }
+    }
+}
+
+POST BUILD ACTIONS: Actions that performs after build.
+
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+    post {
+        failure {
+            echo "my code is tested"
+        }
+    }
+}
+
+
+
