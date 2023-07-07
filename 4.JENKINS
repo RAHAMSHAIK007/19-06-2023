@@ -486,3 +486,89 @@ pipeline {
 
 
 
+================================================
+
+day-08: master and slave
+
+MASTER AND SLAVE:
+it is used to distrribute the builds.
+it reduce the load on jenkins server.
+communication blw master and slave is ssh.
+
+
+SETUP:
+#STEP-1 : Create a server and install java-11
+amazon-linux-extras install java-openjdk11 -y
+
+#STEP-2: SETUP THE SLAVE SERVER
+Dashboard -- > Manage Jenkins -- > Nodes & Clouds -- > New node -- > nodename: abc -- > permanaent agent -- > save 
+
+CONFIGURATION OF SALVE:
+
+Number of executors : 3 #Number of Parallel builds
+Remote root directory : /tmp #The place where our output is stored on slave sever.
+Labels : swiggy #place the op in a particular slave
+useage: last option
+Launch method : last option 
+Host: 172.31.29.140
+Credentials -- > add -- >jenkins -- > Kind : sshusername with privatekey -- > username: ec2-user 
+privatekey : pemfile of server -- > save -- > 
+Host Key Verification Strategy: last option
+
+DASHBOARD -- > JOB -- > CONFIGURE -- > RESTRTICT WHERE THIS JOB RUN -- > LABEL: SWIGGY -- > SAVE
+
+BUILD FAILS -- > WHY -- > WE NEED TO INSTALL PACKAGES
+yum install git java-1.8.0-openjdk maven -y
+
+
+PIPLEINE CODE:
+
+pipeline {
+    agent {
+        label 'swiggy'
+    }
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+    post {
+        failure {
+            echo "my code is tested"
+        }
+    }
+}
+
+
+#JENKINS BACKUP:
+
+Dashboard
+Manage Jenkins
+Plugins
+available plugins 
+Periodic Backup
+install
+
+=================================================================================================
+
+REMOTE BUILDING:
+
+craete a job -- > configure -- > Build Triggers -- > Trigger builds remotely -- > Authentication Token -- > abc -- > save 
+
+BLUE OCEAN:
+
+
+
