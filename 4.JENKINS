@@ -564,11 +564,64 @@ install
 
 =================================================================================================
 
+
+#JENKINS BACKUP:
+
+Dashboard
+Manage Jenkins
+Plugins
+available plugins 
+Periodic Backup
+install
+
+=================================================================================================
+
 REMOTE BUILDING:
 
 craete a job -- > configure -- > Build Triggers -- > Trigger builds remotely -- > Authentication Token -- > abc -- > save 
 
 BLUE OCEAN:
+Dashboard
+Manage Jenkins
+Plugins
+Available plugin
+Blue Ocean
+=======================================================================================================
+RBAC : Role based access control
+
+STEP-1: USER CREATION
+manage jenkins -- > users -- > create users -- > rajesh: fresher & ravi: exp
+
+STEP-2: PLUGIN DOWNLOADING
+Dashboard
+Manage Jenkins
+Plugins
+Available plugin
+Role-based Authorization Strategy  
+
+STEP-3: 
+Dashboard
+Manage Jenkins
+Security
+Authorization 
+Role-based  Strategy  
+SAVE
+
+STEP-4: MANAGE AND ASSIGN USERS
+manage roles -- > add -- > fresher & exp -- > fresher: overall read & exp: admin -- > save
+assign roles -- > add user -- > rajesh: fresher & ravi: exp -- > save
+
+LIST VIEW & MY VIEW:
+To seperate the jobs as per our requirment
 
 
+
+CUSTOM WORKSPACE:
+mkdir raham
+cd /
+chown jenkins:jenkins /root/raham
+chown jenkins:jenkins /root/
+/root/raham
+
+configure -- > advance -- > Use custom workspace -- > /root/raham -- > save
 
