@@ -282,3 +282,189 @@ HISTORY:
    94  ansible-playbook playbook1.yml --tags a,b
    95  cat playbook1.yml
    96  ansible-playbook playbook1.yml --tags d
+
+============================================================================
+DAY-03: 
+
+VARIABLES:
+used to store the data.
+variables will change frequently.
+
+Types:
+1. static: vars are defined inside the playbook.
+
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    z: tree
+  tasks:
+    - name: task-1
+      yum: name={{a}} state=absent
+
+    - name: task-2
+      yum: name={{b}} state=absent
+
+    - name: task-3
+      yum: name={{z}} state=absent
+
+2. dynamic: vars which defined outside of playbook.
+
+ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"
+
+
+2. LOOPS: Used to do work on itterative mode.
+
+- hosts: all
+  tasks:
+    - name: task-1
+      yum: name={{item}} state=present
+      with_items:
+        - git
+        - tree
+        - maven
+        - httpd
+        - docker
+
+- hosts: all
+  tasks:
+    - name: task-1
+      yum: name={{item}} state=absent
+      with_items:
+        - git*
+        - tree*
+        - maven*
+        - httpd*
+        - docker*
+
+
+- hosts: all
+  tasks:
+    - name: task-1
+      user: name={{item}} state=present
+      with_items:
+        - rajesh
+        - sai
+        - srinu
+        - sandy
+        - rolex
+
+- hosts: all
+  tasks:
+    - name: task-1
+      user: name={{item}} state=absent
+      with_items:
+        - rajesh
+        - sai
+        - srinu
+        - sandy
+        - rolex
+
+3. SHELL VS COMMAND VS RAW:
+
+key-value pair is not required for shell, command, raw modules.
+here we can use direct linux commands.
+
+
+- hosts: all
+  tasks:
+    - name: task-1
+      shell: yum install docker -y
+
+    - name: task-2
+      command: yum install tree -y
+
+    - name: task-3
+      raw: yum install httpd -y
+
+
+raw >> command >> shell 
+
+
+4. PIP MODULE:
+
+RedHat = yum 
+Ubuntu = apt
+Python = pip 
+
+ansible all -a "yum install pip -y"
+
+- hosts: all
+  tasks:
+    - name: Installing NumPy
+      pip:
+        name: NumPy
+
+- hosts: all
+  tasks:
+    - name: Installing Pandas
+      pip:
+        name: Pandas
+
+HISTORY:
+
+110  ansible-playbook raham.yml
+  111  ansible all -a "git -v"
+  112  ansible all -a "maven --version"
+  113  ansible all -a "mvn --version"
+  114  vim raham.yml
+  115  ansible-playbook raham.yml
+  116  vim raham.yml
+  117  ansible-playbook raham.yml
+  118  ansible all -a "mvn --version"
+  119  ansible all -a "git -v"
+  120  vim raham.yml
+  121  ansible all -a "tree -v"
+  122  vim raham.yml
+  123  cat raham.yml
+  124  ansible-playbook raham.yml --vars "a=git b=maven c=tree"
+  125  ansible-playbook raham.yml --vars "a=git, b=maven, c=tree"
+  126  ansible-playbook raham.yml --extra-vars "a=git, b=maven, c=tree"
+  127  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  128  ansible all -a "yum remove git* maven* tree* -y"
+  129  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  130  ansible-playbook raham.yml --extra-vars "a=git" "b=maven" "z=tree"
+  131  ansible-playbook raham.yml --extra-vars "a=git,b=maven,z=tree"
+  132  vim raham.yml
+  133  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  134  ansible-playbook raham.yml --extra-vars "a=git,b=maven,z=tree"
+  135  ansible-playbook raham.yml --extra-vars "a=git"
+  136  ansible-playbook raham.yml --extra-vars "b=maven z=tree"
+  137  ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"
+  138  vim raham.yml
+  139  ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"v
+  140  vim p
+  141  vim raham.yml
+  142  ansible-playbook raham.yml
+  143  ansible all -a "git -v"
+  144  ansible all -a "mvn --version"
+  145  ansible all -a "tree --version"
+  146  ansible all -a "httpd --version"
+  147  ansible all -a "docker --version"
+  148  ansible all -a "httpd -v"
+  149  vim raham.yml
+  150  ansible-playbook raham.yml
+  151  ansible all -a "docker --version"
+  152  ansible all -a "httpd -v"
+  153  ansible all -a "mvn --version"
+  154  vi raham.yml
+  155  cat raham.yml
+  156  ansible-playbook raham.yml
+  157  ansible all -a "cat /etc/passwd"
+  158  vim raham.yml
+  159  ansible-playbook raham.yml
+  160  ansible all -a "cat /etc/passwd"
+  161  vim raham.yml
+  162  ansible-playbook raham.yml
+  163  vim p
+  164  vim raham.yml
+  165  ansible all -a "yum install pip -y"
+  166  vim raham.yml
+  167  ansible-playbook raham.yml
+  168  vim raham.yml
+  169  ansible-playbook raham.yml
+  170  vim raham.yml
+  171  ansible-playbook raham.yml
+  172  cat raham.yml
+  173  history
+
