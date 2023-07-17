@@ -467,4 +467,181 @@ HISTORY:
   171  ansible-playbook raham.yml
   172  cat raham.yml
   173  history
+=====================================================================================
+DAY-04:
 
+cluster: group os servers
+Homogenius cluster: all nodes are similar flavours
+Hetrogenis cluster: all nodes are different flavours
+
+CONDITIONS: 
+- hosts: all
+  tasks:
+    - name: installing docker on RedHat
+      yum: name=docker state=present
+      when: ansible_os_family == "RedHat"
+
+    - name: installing docker on Ubuntu
+      apt: name=docker state=present
+      when: ansible_os_family == "Debian"
+
+HANDLERS: it will execute when called by other tasks.
+it will depends on another task.
+
+- hosts: all
+  tasks:
+    - name: installing httpd
+      yum: name=httpd state=present
+      notify: restart httpd
+  handlers:
+    - name: restart httpd
+      service: name=httpd state=restarted
+
+- hosts: all
+  tasks:
+    - name: installing docker
+      yum: name=docker state=present
+      notify: restart docker
+  handlers:
+    - name: restart docker
+      service: name=docker state=restarted
+
+
+ROLES:
+used to organize the playbooks into a directory structure
+it will encapsulate the data
+reduce the size of playbook
+
+.
+├── master.yml
+└── roles
+    ├── role1
+    │   └── tasks
+    │       └── main.yml
+    └── role2
+        └── tasks
+            └── main.yml
+
+mkdir -p roles/role1/tasks
+mkdir -p roles/role2/tasks
+
+ cat master.yml
+- hosts: all
+  roles:
+    - role2
+
+cat roles/role1/tasks/main.yml
+- name: creating users
+  user: name={{item}} state=present
+  with_items:
+    - usera
+    - userb
+    - userc
+
+cat roles/role2/tasks/main.yml
+- name: installing packages
+  yum: name={{item}} state=present
+  with_items:
+    - git
+    - maven
+    - docker
+    - tree
+
+ANSIBLE GALAXY:
+source code = github
+roles & playbooks = ansible galaxy
+
+its a place where we can use other persons playbooks and roles.
+we can download role and use them.
+
+ansible-galaxy search java : to search java roles 
+ansible-galaxy install azavea.java : to install a role
+ansible-galaxy search --author amtega : to search particular user roles
+
+HISTORY:
+ 2  vim /etc/ssh/sshd_config
+    3  sysytemctl restart sshd
+    4  systemctl restart sshd
+    5  systemctl status sshd
+    6  amazon-linux-extras install ansible2 -y
+    7  yum install python python-pip python-dlevel -y
+    8  vim /etc/ansible/hosts
+    9  vim /etc/ansible/ansible.cfg
+   10  ssh-keygen
+   11  ls -al
+   12  ssh-copy-id root@172.31.17.238
+   13  ssh-copy-id root@172.31.16.80
+   14  ssh-copy-id root@172.31.28.116
+   15  ssh-copy-id root@172.31.23.202
+   16  cd .ssh/
+   17  ll
+   18  cat known_hosts
+   19  ansible -m ping all
+   20  cd
+   21  vim playbook.yml
+   22  ansible -m setup all
+   23  ansible -m setup all | grep -i ansible_os_family
+   24  cat playbook.yml
+   25  ansible-playbook playbook.yml
+   26  vim playbook.yml
+   27  cat /etc/os-release
+   28  vim playbook.yml
+   29  ansible-playbook playbook.yml
+   30  vim playbook.yml
+   31  ansible-playbook playbook.yml
+   32  vim playbook.yml
+   33  ansible-playbook playbook.yml
+   34  vim playbook.yml
+   35  ansible-playbook playbook.yml
+   36  vim playbook.yml
+   37  ansible-playbook playbook.yml
+   38  ansible all -a "yum remove htpd* -y"
+   39  ansible all -a "yum remove httpd* -y"
+   40  ansible-playbook playbook.yml
+   41  vim playbook.yml
+   42  ansible-playbook playbook.yml
+   43  ansible all -a "yum remove docker* -y"
+   44  ansible-playbook playbook.yml
+   45  vim playbook.yml
+   46  cat playbook.yml
+   47  rm -rf *
+   48  ll
+   49  mkdir -p roles/role1/tasks
+   50  yum install tree -y
+   51  tree
+   52  mkdir -p roles/role2/tasks
+   53  tree
+   54  vim roles/role1/tasks/main.yml
+   55  vim roles/role2/tasks/main.yml
+   56  tree
+   57  vim master.yml
+   58  cat master.yml
+   59  tree
+   60  ansible-playbook master.yml
+   61  vim master.yml
+   62  ansible-playbook master.yml
+   63  tree
+   64  cat master.yml
+   65  cat roles/role1/tasks/main.yml
+   66  cat roles/role2/tasks/main.yml
+   67  vim roles/role1/tasks/main.yml
+   68  vim roles/role2/tasks/main.yml
+   69  vim master.yml
+   70  ansible-playbook p
+   71  ansible-playbook master.yml
+   72  ansible-galaxy search java
+   73  ansible-galaxy install azavea.java
+   74  ls -al
+   75  cd .ansible
+   76  ll
+   77  cd roles/
+   78  ll
+   79  ansible-galaxy search tomcat
+   80  ansible-galaxy install alikins.tomcat6
+   81  ansible-galaxy install amtega.tomcat
+   82  ll
+   83  cd amtega.tomcat
+   84  ll
+   85  cat tasks/main.yml
+   86  ansible-galaxy search --author amtega
+   87  history
