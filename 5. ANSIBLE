@@ -645,3 +645,126 @@ HISTORY:
    85  cat tasks/main.yml
    86  ansible-galaxy search --author amtega
    87  history
+=============================================================================================
+DAY-05:
+
+STRATAGIES:
+1. Linear
+2. Free
+
+ASYNCHRONOUS ACTIONS & POLLING:
+we use this for restricting the task for particular time
+within in the requested time only the task need to be complete
+if it takes more than requested time task will be failed
+
+
+- hosts: all
+  tasks:
+    - name: install git
+      command: sleep 40
+      async: 30
+      poll: 10
+
+    - name: install maven
+      yum: name=maven state=present
+
+
+
+JINJA-2 TEMPLATE:
+Jinja-2 is a template kind of language for having a customized output
+
+DEBUG MODULE:
+IT IS USED TO PRINT THE MESSAGE
+
+- hosts: all
+  tasks:
+    - debug:
+        msg: hai all im my name is 
+
+
+ANSIBLE LOOKUPS: 
+To retrive the data from files, folders, databases.
+
+
+- hosts: all
+  vars:
+    a: "{{ lookup('file', '/root/test.txt') }}"
+  tasks:
+    - debug:
+        msg: "the content i n file is {{ a }}"
+
+
+ANSIBLE VAULT:
+it is used for encryption
+techinque: AES256
+we can restrict the user to a playbook.
+
+
+ansible-valut create creds.txt	: to create a valut
+ansible-valut edit creds.txt	: to edit a valut
+ansible-valut rekey creds.txt	: to change password a valut
+ansible-valut decrypt creds.txt	: to decrypt the valut
+ansible-valut encrypt creds.txt	: to encrypt the valut
+ansible-valut view creds.txt	: to show the content without decrypting
+
+
+HISTORY:
+ 143  ll
+  144  vim playbook.yml
+  145  ansible all -a "yum remove git* -y"
+  146  ansible-playbook playbook.yml 
+  147  vim playbook.yml 
+  148  ansible all -a "yum remove git* -y"
+  149  ansible-playbook playbook.yml 
+  150  vim playbook.yml 
+  151  ansible-playbook playbook.yml 
+  152  vim playbook.yml 
+  153  ansible-playbook playbook.yml 
+  154  vim playbook.yml 
+  155  ansible-playbook playbook.yml 
+  156  vim playbook.yml 
+  157  vim abc.txt
+  158  ll
+  159  vim playbook.yml 
+  160  ansible-playbook playbook.yml 
+  161  vim playbook.yml 
+  162  ansible-playbook playbook.yml 
+  163  vim playbook.yml 
+  164  ansible-playbook playbook.yml 
+  165  vim playbook.yml 
+  166  ansible-playbook playbook.yml 
+  167  vim playbook.yml 
+  168  ansible-playbook playbook.yml 
+  169  ll
+  170  vim playbook.yml 
+  171  ansible-playbook playbook.yml 
+  172  vim playbook.yml 
+  173  ansible-playbook playbook.yml 
+  174  vim playbook.yml 
+  175  ansible-playbook playbook.yml 
+  176  vim test.txt
+  177  ll
+  178  vim playbook.yml 
+  179  ansible-playbook playbook.yml 
+  180  vim playbook.yml 
+  181  ll
+  182  rm -rf *.txt
+  183  ll
+  184  ansible-vault create creds.txt
+  185  cat creds.txt 
+  186  ansible-vault edit creds.txt 
+  187  cat creds.txt 
+  188  ansible-vault rekey creds.txt 
+  189  ansible-vault decrypt creds.txt 
+  190  cat creds.txt 
+  191  ansible-vault encrypt creds.txt 
+  192  cat creds.txt 
+  193  ansible-vault view creds.txt 
+  194  cat creds.txt 
+  195  ll
+  196  ansible-vault encrypyt playbook.yml 
+  197  ansible-vault encrypt playbook.yml 
+  198  cat playbook.yml 
+  199  ansible-playbook playbook.yml 
+  200  ansible-vault decrypt playbook.yml 
+  201  ansible-playbook playbook.yml
