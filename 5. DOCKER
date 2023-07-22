@@ -406,3 +406,133 @@ HISTORY:
    61  docker run -itd --name appcont2 -p 95:80 raham:v1
    62  docker run -itd --name appcont3 -p 92:80 raham:v1
    63  history
+=============================================
+
+DAY-03: VOLUMES
+
+DAY-03:
+VOLUMES:
+It is used to store data inside container.
+volume is a simple directory inside container.
+containers uses host resources (cpu, ram, rom).
+single volume can be shared to multiple containers.
+ex: cont-1 (vol1)  --- > cont2 (vol1) & cont3 (vol1) & cont4 (vol1)
+at a time we can share single volume to single container only.
+
+
+3 WAYS:
+1 WAY: 
+
+Dockerfile:
+FROM ubuntu
+VOLUME ["/vol1"]
+
+docker build -t swiggy:v1 .
+docker run -it --name cont1 swiggy:v1
+
+cd /vol
+touch file{1..5}
+
+ctrl p q
+
+docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+ cd /vol1
+ll
+
+ctrl p q
+
+==============================================================================
+
+METHOD-2:
+
+docker run -it --name cont3 -v vol2 ubuntu
+docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu
+
+============================================================================
+
+METHOD-3: MOUNT VOLUMES
+
+Here volume we can create locally and attach to container
+
+docker volume ls	: to list the volumes
+docker volume create vol3 : to create a volume
+docker volume inspect vol3 : to get information about volume
+cd /var/lib/docker/volumes/vol3/_data
+touch file{1..10}
+
+docker run -it --name cont5 --mount source=vol3,destination=/vol3 ubuntu
+
+docker volume rm vol4: to remove the volumes.
+docker volume prune: to remove all unused volumes.
+
+NOTE: we cannot remove volume which have data.
+
+UP TO NOW WE SHARE VOLUMES FORM CONTAINER TO CONTAINER
+NOW WE ARE GOING TO SHARE VOLUMES FORM LOCAL TO CONTAINER
+
+
+
+LOCAL -- CONTAINER
+
+touch file{1..10}
+docker run -it --name cont6 -v /root:/abcd ubuntu
+
+
+SYSTEM:
+docker system df : to show componets info (short)
+docker system df -v : to show componets info (long)
+docker system events:
+
+
+JENKINS SETUP ON DOCKER:
+
+docker run -it --name jenkinscont -p 8080:8080 jenkins/jenkins:lts
+
+HISTORY:
+
+ 41  yum install docker -y
+   42  docker version
+   43  systemctl start docker
+   44  systemctl status docker
+   45  docker version
+   46  vim Dockerfile
+   47*
+   48  docker images
+   49*
+   50  docker ps
+   51  docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+   52  docker attach cont1
+   53  cat Dockerfile
+   54  docker run -it --name cont3 -v vol2 ubuntu
+   55  docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu
+   56  docker volume ls
+   57  docker volume create vol3
+   58  docker volume ls
+   59  docker volume inspect vol3
+   60  cd /var/lib/docker/volumes/vol3/_data
+   61  touch local{1..10}
+   62  ll
+   63  docker run -it --name cont5 --mount source=vol3,destination=/vol3 ubuntu
+   64  cd
+   65  docker volume ls
+   66  docker volume create vol4
+   67  docker volume ls
+   68  docker volume inspect vol4
+   69  docker volume rm vol4
+   70  docker volume ls
+   71  docker volume
+   72  touch file{1..10}
+   73  ll
+   74  docker run -it --name cont6 -v /root:/abcd ubuntu
+   75  docker system
+   76  docker system df
+   77  docker system df -v
+   78  docker system events
+   79  docker run -it --name jenkinscont -p 8080:8080 jenkins/jenkins:lts
+   80  docker ps -a
+   81  docker ps -a -q
+   82  docker stop $(docker ps -a -q)
+   83  docker ps -a
+   84  docker rm $(docker ps -a -q)
+   85  docker ps -a
+   86  docker ps
