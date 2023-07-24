@@ -536,3 +536,165 @@ HISTORY:
    84  docker rm $(docker ps -a -q)
    85  docker ps -a
    86  docker ps
+
+===========================================
+
+DAY-04:
+
+
+DOCKER COMPOSE:
+it is a tool to create,run and deploy mutiple services/containers at as single time.
+we need to write compose file.
+it is on yaml format.
+the default file name is docker-compose.yml (or) compose.yml (yaml=yml).
+here we can mention all the services of a app (frontend and backend)
+in compose we can mentin: images, volumes, ports, nlw -----
+
+INSTALLATION:
+
+vim compose.sh
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+ls /usr/local/bin/
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+sh compose.sh
+
+
+vim docker-compose.yml
+
+version: '3'
+services:
+  movies:
+    image: movies:v1
+    ports:
+      - "84:80"
+  train:
+    image: train:v1
+    ports:
+      - "85:80"
+  dth:
+    image: dth:v1
+    ports:
+      - "86:80"
+  recharge:
+    image: recgarge:v1
+    ports:
+      - "87:80"
+
+docker-compose up -d	: to create & run all services
+docker-compose stop	: to stop all services
+docker-compose start	: to start all services
+docker-compose pause	: to pause all services
+docker-compose unpause	: to unpause all services
+docker-compose ps	: to show compose containers only
+docker-compose images	: to show compose images only
+docker-compose logs	: to show logs of compose 
+docker-compose down	: to  stop & destroy all services
+
+DOCKER-HUB:
+to store images on internet.
+if the repo is public anyone can access the image.
+
+S-1: Crete DockerHub account 
+S-2: Create a repo
+S-3: Tagging image (docker tag movies:v1 saiteja9573/movies)
+S-4: DOCKER LOGIN
+S-4: Pushing (docker push saiteja9573/movies:latest)
+
+
+create -- > tag -- > push 
+
+
+HISTORY:
+
+   1  yum install docker -y
+    2  docker version
+    3  systemctl start docker
+    4  docker version
+    5  systemctl stop docker
+    6  systemctl status docker
+    7  docker pull ubuntu
+    8  systemctl start docker
+    9  systemctl status docker
+   10  vim Dockerfile
+   11  vim index.html
+   12  docker build -t movies:v1 .
+   13  docker images
+   14  vim index.html
+   15  docker build -t train:v1 .
+   16  vim index.html
+   17  docker build -t dth:v1 .
+   18  docker images
+   19  vim index.html
+   20  docker build -t recharge:v1 .
+   21  docker images
+   22  docker run -itd --name cont1 -p 80:80 movies:v1
+   23  docker run -itd --name cont2 -p 81:80 train:v1
+   24  docker run -itd --name cont3 -p 82:80 dth:v1
+   25  docker run -itd --name cont4 -p 83:80 recharge:v1
+   26  docker ps
+   27  vim docker-compose.yml
+   28  docker ps
+   29  docker-compose up
+   30  vim compose.sh
+   31  sh compose.sh
+   32  docker-compose --version
+   33  cat docker-compose.yml
+   34  vim docker-compose.yml
+   35  docker-compose up -d
+   36  docker ps -a
+   37  vim docker-compose.yml
+   38  docker images
+   39  docker run -itd --name cont5 -p 88:80 dth:v1
+   40  vim docker-compose.yml
+   41  docker run -itd --name cont5 -p 89:80 recharge:v1
+   42  docker run -itd --name cont6 -p 89:80 recharge:v1
+   43  vim docker-compose.yml
+   44  docker-compose up -d
+   45  vim docker-compose.yml
+   46  docker-compose up -d
+   47  cat docker-compose.yml
+   48  docker-compose stop
+   49  docker ps -a
+   50  docker-compose start
+   51  docker ps -a
+   52  docker-compose pause
+   53  docker ps -a
+   54  docker-compose unpause
+   55  docker ps -a
+   56  docker-compose ps
+   57  docker-compose images
+   58  docker-compose logs
+   59  docker-compose rm
+   60  docker-compose kill
+   61  docker-compose start
+   62  docker-compose ps
+   63  docker-compose down
+   64  docker-compose ps
+   65  vim docker-compose.yml
+   66  docker-compose uo -d
+   67  docker-compose up -d
+   68  docker-compose down
+   69  docker images
+   70*
+   71  /
+   72  docker tag movies:v1 saiteja9573/movies
+   73  docker images
+   74  docker push saiteja9573/movies:latest
+   75  docker login
+   76  docker push saiteja9573/movies:latest
+   77  docker images
+   78  docker rmi saiteja9573/movies -f
+   79  docker images
+   80  docker rmi movies:v1 -f
+   81  docker images
+   82  docker-compose up -d
+   83  vim docker-compose.yml
+   84  docker-compose up -d
+   85  docker images
+   86  docker tag dth:v1 saiteja9573/dth
+   87  docker push saiteja9573/dth
+   88  history
