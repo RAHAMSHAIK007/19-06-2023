@@ -698,3 +698,156 @@ HISTORY:
    86  docker tag dth:v1 saiteja9573/dth
    87  docker push saiteja9573/dth
    88  history
+
+=======================================================================================
+
+DOCKER SWARM: 
+Its an orchestration tool.
+manages mutiple containers on multiple servers.
+worker nodes will follow what manager node instructs.
+we need to enable docker engine.
+
+SETUP:
+Create 3 server with all traffic
+
+yum install docker -y
+systemctl start docker
+systemctl status docker
+
+hostnamectl set-hostname manager
+hostnamectl set-hostname worker-1
+hostnamectl set-hostname worker-2
+
+sudo -i
+
+docker swarm init --advertise-addr (provate-ip-manager)
+copy token to worker nodes
+docker node ls
+
+SERVICES:
+its a feature of an application.
+we can crearte replicas for service.
+if we delete one conatiner it will create another one immedieatly.
+
+docker service create --name movies --replicas 3 --publish 80:80 saiteja9573/movies:latest
+docker service ls
+docker service create --name train --replicas 5 --publish 81:80 saiteja9573/train:latest
+docker service scale movies=10
+docker service scale train=10
+docker service ps train
+docker service ps movies
+docker service logs train
+docker service logs movies
+docker service inspect train
+
+
+DOCKER NETWORK:
+It is used to establish communication blw two containers
+
+Docker networks are used to make a communication between the multiple containers that are running on same or different docker hosts. We have different types of docker networks.
+Bridge Network
+Host Network
+None network
+Overlay network
+
+BRIDGE NETWORK: It is a default network that container will communicate with each other within the same host.
+
+HOST NETWORK: When you Want your container IP and ec2 instance IP same then you use host network
+
+NONE NETWORK: When you don’t Want The container to get exposed to the world, we use none network. It will not provide any network to our container.
+
+OVERLAY NETWORK: Used to communicate containers with each other across the multiple docker hosts.
+
+To create a network: docker network create network_name
+To see the list: docker network ls
+To delete a network: docker network rm network_name
+To inspect: docker network inspect network_name
+To connect a container to the network: docker network connect network_name container_id/name
+apt install iputils-ping -y : command to install ping checks
+To disconnect from the container: docker network disconnect network_name container_name
+To prune: docker network prune
+
+HISTORY:
+
+    1  docker swarm inti --advertise-addr 172.31.86.226
+    2  docker swarm init --advertise-addr 172.31.86.226
+    3  docker node ls
+    4  docker service create --name movies --replicas 3 --publish 80:80 saiteja9573/movies:latest
+    5  docker ps
+    6  docker service ls
+    7  docker service create --name train --replicas 5 --publish 81:80 saiteja9573/train:latest
+    8  docker service ls
+    9  docker service movies scale=10
+   10  docker service scale movies=10
+   11  docker service ls
+   12  docker service scale train=10
+   13  docker service ls
+   14  docker service ps train
+   15  docker kill ducjikicevgq
+   16  docker kill train.10
+   17  docker stop train.10
+   18  docker stop ducjikicevgq
+   19  docker service ps train
+   20  ducjikicevgq   train.10   saiteja9573/train:latest   worker-1   Running         Running 3 minutes ago
+   21  docker ps
+   22  docker kill 5cc6bf6562e4
+   23  docker ps
+   24  docker kill 21e214ef98ad
+   25  docker ps
+   26  docker service ps train
+   27  docker service ps movies
+   28  docker service ls
+   29  docker service scale train=3
+   30  docker service ls
+   31  docker service scale movies=3
+   32  docker service movies logs
+   33  docker movies logs
+   34  docker service train logs
+   35*
+   36  docker service logs train
+   37  docker service logs movie
+   38  docker service logs movies
+   39  docker service inspect train
+   40  docker service rm train
+   41  docker service ps train
+   42  docker service ls
+   43  docker service rm movies
+   44  docker service ls
+   45  docker network ls
+   46  docker run -d cont1 ubuntu
+   47  docker run -d --name cont1 ubuntu
+   48  docker run -d --name cont2 ubuntu
+   49  docker ps -a
+   50  docker rm 7bce36c48ee7
+   51  docker rm e75ce13372fa
+   52  docker ps -a
+   53  docker node ls
+   54  docker node rm 5nn092n8l0r7x60ns7kq4xsff
+   55  docker node ls
+   56  docker node rm gs8tcv08bf2e6bb670pyktjpy
+   57  docker node ls
+   58  docker node rm swlbtpur3qqn0irm1w7ftauhv
+   59  docker node rm gs8tcv08bf2e6bb670pyktjpy
+   60  docker node ls
+   61  docker node rm swlbtpur3qqn0irm1w7ftauhv
+   62  docker node ls
+   63  docker create network raham
+   64  docker network create raham
+   65  docker network ls
+   66*
+   67  docker run -itd --name cont2 ubuntu
+   68  docker run -itd --name cont1 ubuntu
+   69  docker network connect raham cont1
+   70  docker network inspect raham
+   71  docker network connect raham cont2
+   72  docker network inspect raham
+   73  docker network ls
+   74  docker network rm 8d55b0dc3f60
+   75  docker network disconnect raham cont2
+   76  docker network disconnect raham cont1
+   77  docker network inspect raham
+   78  docker network rm 8d55b0dc3f60
+   79  docker swarm join-token manager
+   80  docker swarm join-token worker
+   81  history
+[root@manager ~]#
