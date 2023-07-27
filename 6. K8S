@@ -1,0 +1,114 @@
+DAY-01:
+
+KUBERNETES:
+Its an alternative tool for docker swarm.
+shortcut is k8s.
+we have some limitations on docker swarm so we are using now k8s.
+
+INTRO:
+opensource platfrom written on go lang used to manage containers.
+google invented it on 2014 but later given to cncf & initial version is 2015 
+
+COMPONENTS:
+ARCHITECTURE: CNPCA
+
+MASTER NODE:
+1. API SERVER: Used to communicate with k8s cluster.
+2. ETCD: DB for k8s cluster.it store complete info of cluster.
+3. SCHEDULER: used to schdule pods on worker nodes based on hw.
+4. CONTROLLER: It will control the components of k8s.
+
+WORKER NODE:
+1. KUBELET: Its an agent, which infrom all actions to master.
+2. KUBEPROXY: It deals with networking.
+3. PODS: group of containers.
+
+TYPES OF CLUSTER:
+1. SELFMANAGED:
+A. MINIKUBE: 
+ITS A SINGLE NODE CLUSTER (MASTER & WORKER)
+IN REAL TIME WE USE IT FOR DEV AND TEST ENVS.
+NOTE: IT WILL NOT USED ON PROD.
+
+MINIKUBE SETUP:
+
+vim minikube.sh
+
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install curl wget apt-transport-https -y
+sudo curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod +x /usr/local/bin/minikube
+sudo minikube version
+sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo minikube start --driver=docker --force
+
+sh minikube.sh
+
+=====================================
+PODS:
+its a group of containers.
+k8s will work with pods only, it dont know about containers.
+pod is the basic unit of deployment in k8s.
+
+KUBECTL: its a tool used to execute commands on k8s cluster.
+
+CREATION OF PODS:
+
+1. IMPERATIVE METHOD: Through commands
+2. DECLARATIVE METHOD: Through files (manifest files)
+
+IMPERATIVE:
+To create a pod		:kubectl run pod1 --image httpd
+To list pods		:kubectl get po/pod/pods
+To show addtional info	:kubectl get po -o wide
+To show complete info	:kubectl describe pod pod1
+To delete the pod	:kubectl delete pod pod1
+
+DECLARATIVE:
+
+vim abc.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+    - name: cont1
+      image: nginx
+
+kubectl create -f abc.yml
+
+
+HISTORY:
+
+  1  vim minikube.sh
+    2  sh minikube.sh
+    3  minikube status
+    4  kubectl run pod1 --image httpd
+    5  kubectl get pods
+    6  kubectl get pod
+    7  kubectl get po
+    8  kubectl get po/pod/pods
+    9  kubectl get po -o wide
+   10  kubectl describe pod pod1
+   11  kubectl delete pod pod1
+   12  kubectl run pod1 --image rahamshaik/trainservice:latest
+   13  kubectl get po
+   14  kubectl get po -o wide
+   15  kubectl describe pod pod1
+   16  kubectl delete pod pod1
+   17  vim abc.yml
+   18  kubectl create -f abc.yml
+   19  kubectl get po
+   20  kubectl describe pod pod1
+   21  kubectl delete pod pod1
+   22  history
+
