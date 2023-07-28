@@ -112,3 +112,176 @@ HISTORY:
    21  kubectl delete pod pod1
    22  history
 
+====================================DAY-02: REPLICASET. LABELS & SELECTORS, DEPLOYMENT & KUBECOLRO, SCALING
+
+REPLICASET:
+It will create replicas of pod.
+if we delete one pod it will create another one.
+all pods will have same application inside it.
+
+
+LABELS: is used to craete the particular pods as a single unit.
+SELECTOR: Used to select pods with same labels.
+
+
+vim replicaset.yml
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: nginx
+
+
+To list rs		:kubectl get rs/replicaset
+To show addtional info	:kubectl get rs -o wide
+To show complete info	:kubectl describe rs name-of-rs
+To delete the rs	:kubectl delete rs name-of-rs
+
+SCALING THE RS:
+SCALE-UP: kubectl scale rs/swiggy-rs --replicas=10
+SCALE-DOWN: kubectl scale rs/swiggy-rs --replicas=5
+
+NOTE: It follows LIFO in deletion.
+
+DRAWBACK:
+it will not useful if application is update.
+we need to update image manually one by one to rs.
+
+DEPLOYMENT:
+it is advannce than replicaset, used to update pods all at a time.
+in real time we create deployments only.
+
+deployment -- > rs -- > pods
+
+vim abc.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: nginx
+
+kubectl create -f abc.yml
+kubectl get deploy
+kubectl get rs
+kubectl get po
+kubectl get po --show-labels
+
+NOTE: when we update image old pods will deleted new pods will create.
+
+TO UPDATE IMAGE: kubectl edit deploy/swiggy-deploy
+kubectl describe deploy swiggy-deploy
+
+KUBECOLOR:
+
+wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.tar.gz
+tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
+./kubecolor
+chmod +x kubecolor
+mv kubecolor /usr/local/bin/
+kubecolor get po
+
+
+HISTORY:
+
+  1  vim minikube.sh
+    2  sh minikube.sh
+    3  kubectl run swiggy --image httpd
+    4  kubectl get po
+    5  kubectl delete pod swiggy
+    6  kubectl get po
+    7  vim abc.yml
+    8  kubectl api-resources
+    9  vim abc.yml
+   10  kubectl create -f abc.yml
+   11  vim abc.yml
+   12  kubectl create -f abc.yml
+   13  vim abc.yml
+   14  kubectl create -f abc.yml
+   15  kubectl api-resources
+   16  kubectl get rs
+   17  kubectl get rs -o wide
+   18  kubectl describe rs swiggy-rs
+   19  kubectl get po
+   20  kubectl delete pod swiggy-rs-8pp9q
+   21  kubectl get po
+   22  kubectl delete po swiggy-rs-vqhrm
+   23  kubectl get po
+   24  kubectl delete pod swiggy-rs-2p6zs swiggy-rs-dbpwf swiggy-rs-rvzgt
+   25  kubectl get po
+   26  cat abc.yml
+   27  kubectl get replicaset
+   28  kubectl get rs
+   29  kubectl delete rs swiggy-rs
+   30  kubectl get rs
+   31  kubectl get po
+   32  kubectl create -f abc.yml
+   33  kubectl get po
+   34  kubectl scale rs/swiggy-rs --replicas=10
+   35  kubectl get po
+   36  kubectl scale rs/swiggy-rs --replicas=20
+   37  kubectl get po
+   38  kubectl scale rs/swiggy-rs --replicas=5
+   39  kubectl get po
+   40  cat abc.yml
+   41  vim abc.yml
+   42  kubectl create -f abc.yml
+   43  kubectl get deploy
+   44  kubectl get rs
+   45  kubectl get po
+   46  kubectl describe deploy swiggy-deploy
+   47  kubectl edit deploy/swiggy-deploy
+   48  kubectl describe deploy swiggy-deploy
+   49  kubectl get po
+   50  kubectl describe pod swiggy-deploy-9cc566b54-mcwbv
+   51  kubectl describe pod swiggy-deploy-9cc566b54-rtj8t
+   52  kubectl decsribe pod swiggy-deploy-9cc566b54-xwcqs
+   53  kubectl describe pod swiggy-deploy-9cc566b54-xwcqs
+   54  kubectl edit deploy/swiggy-deploy
+   55  kubectl describe pod swiggy-deploy-9cc566b54-xwcqs
+   56  kubectl describe deploy swiggy-deploy
+   57  kubectl get po
+   58  kubectl describe pod swiggy-deploy-7fdfcb7ffb-9p87n
+   59  kubectl describe pod swiggy-deploy-7fdfcb7ffb-h6m9b
+   60  kubectl get deploy
+   61  kubectl scale deploy/swiggy-deploy --replicas=10
+   62  kubectl get po
+   63  kubectl get po --show-labels
+   64  wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.ta                                                                                                                                                                                                                                                                      r.gz
+   65  tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
+   66  ./kubecolor
+   67  chmod +x kubecolor
+   68  mv kubecolor /usr/local/bin/
+   69  kubecolor get po
+   70  kubecolor get deploy
+   71  history
+
