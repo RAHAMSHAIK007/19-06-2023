@@ -851,3 +851,12 @@ HISTORY:
    80  docker swarm join-token worker
    81  history
 [root@manager ~]#
+
+
+PORTAINER:
+Must have swarm mode and all ports enable with docker engine
+
+curl -L https://downloads.portainer.io/ce2-16/portainer-agent-stack.yml -o portainer-agent-stack.yml
+docker stack deploy -c portainer-agent-stack.yml portainer
+docker ps
+public-ip of swamr master:9000
