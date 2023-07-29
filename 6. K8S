@@ -285,3 +285,122 @@ HISTORY:
    70  kubecolor get deploy
    71  history
 
+=============================================================================
+
+DAY-03: KOPS
+
+INFRA: Resources used to run our application on cloud.
+ex: ec2, elb, asg, vpc ------
+
+KOPS:
+It is kubernetes operations.
+create, delete, update the cluster.
+currently aws and gcp is supporting.
+automate the entire infrastructure for k8s.
+its 3rd party tool free and opensource.
+
+
+IAM -- > USERS -- > USERNAME: KOPSRAHAM -- > Attach policies directly -- > AdministratorAccess -- > next -- > create 
+
+click -- > rahamkopss -- > security creds -- > Access keys -- > create access key -- > cli -- > select checkbox -- > next -- > create access key -- > download
+
+
+SETUP:
+
+PART-1: DOWNLOADING, MV AND GIVING PERMISSIONS
+
+
+#vim .bashrc
+#export PATH=$PATH:/usr/local/bin/
+#source .bashrc
+
+
+#! /bin/bash
+aws configure
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+wget https://github.com/kubernetes/kops/releases/download/v1.25.0/kops-linux-amd64
+chmod +x kops-linux-amd64 kubectl
+mv kubectl /usr/local/bin/kubectl
+mv kops-linux-amd64 /usr/local/bin/kops
+
+
+PART-2: CREATING BUCKET TO STORE CLUSTER INFO
+
+bucket is used to store objects(files)
+versioning means it will retrive the deleted files.
+
+aws s3api create-bucket --bucket heerashaik09.k8s.local --region us-east-1
+aws s3api put-bucket-versioning --bucket heerashaik09.k8s.local --region us-east-1 --versioning-configuration Status=Enabled
+export KOPS_STATE_STORE=s3://heerashaik09.k8s.local
+
+ 
+PART-3: CREATING CLUSTER
+
+kops create cluster --name heerashaik09.k8s.local --zones us-east-1a --master-count=1 --master-size t2.medium --node-count=2 --node-size t2.micro
+kops update cluster --name heerashaik09.k8s.local --yes --admin
+kops validate cluster --wait 10m
+
+SCALING THE CLUSTER:
+
+ * list clusters with: kops get cluster
+ * edit this cluster with: kops edit cluster heerashaik09.k8s.local
+ * edit your node instance group: kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+ * edit your master instance group: kops edit ig --name=heerashaik09.k8s.local master-us-east-1a
+
+kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+kops update cluster --name heerashaik09.k8s.local --yes
+kops rolling-update cluster
+
+TO DELET CLUTSTER: kops delete cluster --name heerashaik09.k8s.local --yes
+
+HISTORY:
+
+ 1  aws configure
+    2  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    3  wget https://github.com/kubernetes/kops/releases/download/v1.25.0/kops-linux-amd64
+    4  chmod +x kops-linux-amd64 kubectl
+    5  mv kubectl /usr/local/bin/kubectl
+    6  mv kops-linux-amd64 /usr/local/bin/kops
+    7  kops --version
+    8  kubectl --version
+    9  vim .bashrc
+   10  source .bashrc
+   11  kops --version
+   12  kubectl --version
+   13  kubectl
+   14  aws s3api create-bucket --bucket rahamssshaik09.k8s.local --region us-east-1
+   15  vim .aws/credentials
+   16  aws s3api create-bucket --bucket rahamssshaik09.k8s.local --region us-east-1
+   17  aws s3api create-bucket --bucket heerashaik09.k8s.local --region us-east-1
+   18  aws s3api put-bucket-versioning --bucket heerashaik09.k8s.local --region us-east-1 --versioning-configuration Status=Enabled
+   19  export KOPS_STATE_STORE=s3://heerashaik09.k8s.local
+   20  kops create cluster --name heerashaik09.k8s.local --zones us-east-1a --master-count=1 --master-size t2.medium --node-count=2                                                                                                                                                                                 --node-size t2.micro
+   21  kops update cluster --name heerashaik09.k8s.local --yes --admin
+   22  kops validate cluster --wait 10m
+   23  kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+   24  kops update cluster --name heerashaik09.k8s.local --yes
+   25  kops rolling-update cluster
+   26  kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+   27  kops rolling-update cluster
+   28  kops update cluster --name heerashaik09.k8s.local --yes
+   29  kops rolling-update cluster
+   30  kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+   31  kops update cluster --name heerashaik09.k8s.local --yes
+   32  kops rolling-update cluster
+   33  kops edit ig --name=heerashaik09.k8s.local nodes-us-east-1a
+   34  kops update cluster --name heerashaik09.k8s.local --yes
+   35  kops rolling-update cluster
+   36  kubectl get no
+   37  kops get cluster
+   38  kubectl get no
+   39  vim deploy.yml
+   40  kubectl create -f deploy.yml
+   41  kubectl get po
+   42  kubectl get po -o wide
+   43  kubectl scale deploy/swiggy-deploy --replicas=9
+   44  kubectl get po -o wide
+   45  kubectl scale deploy/swiggy-deploy --replicas=12
+   46  kubectl get po -o wide
+   47  kops delete cluster --name heerashaik09.k8s.local --yes
+   48  history
+  
