@@ -1,0 +1,191 @@
+DAY-01:
+
+TERRAFORM:
+its a tool used to make infrastructure automation.
+its a free and opensource.
+its platform independent.
+it comes on year 2014.
+who: mitchel hasimoto 
+ownde: hasicorp 
+terraform is written on go language.
+We can call terraform as IAAC TOOL.
+
+HOW IT WORKS:
+terraform uses code to automate the infra.
+we use HCL : HashiCorp Configuration Language.
+
+IAAC: Infrastructure as a code.
+
+Code --- > execute --- > Infra 
+
+ADVANTGAES:
+1. Reuseable 
+2. Time saving
+3. Automation
+4. Avoiding mistakes
+5. Dry run
+
+
+INSTALLING TERRAFORM:
+
+sudo yum install -y yum-utils shadow-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
+aws configure
+
+
+TERRAFORM CONFIGURATION FILES:
+it consist code for the resources to create.
+we use HCL language.
+we use blocks to specify the code and resources.
+
+EX: *.tf, *.tfvars
+
+
+BLOCKS:
+1. PROVIDER: it consist cloud info and region info.
+2. RESOURCE: it consist resource configuration.
+3. VARIABLE: it will store the variables
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-008bcc0a51a849165"
+instance_type = "t2.micro"
+}
+
+TERRAFORM BASIC COMMANDS:
+terraform inti	: downloads provide plugins 
+terraform plan	: creates execution plan 
+terraform apply	: creates resource 
+terraform destroy: delete resource
+
+terraform state file: 
+it will store the resource information which is created by terraform.
+it will track the resource.
+name: terraform.tfstate
+terraform state list : to show the resource list in statefile
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+count = 5
+ami = "ami-008bcc0a51a849165"
+instance_type = "t2.micro"
+}
+
+
+Note: when we create muliple resources in same block we will index numbers while seeing state list.
+
+TARGET: it is used to destroy a specific resource only.
+terraform state list
+terraform destroy -target="aws_instance.one[0]"
+terraform destroy -target="aws_instance.one[1]" -target="aws_instance.one[2]"
+
+
+VARIABLES:
+
+1. string: 
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-008bcc0a51a849165"
+instance_type = var.instance_type
+}
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+----------------------------------------
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = var.ami_id
+instance_type = var.instance_type
+}
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+
+variable "ami_id" {
+description = ""
+type = string
+default = "ami-008bcc0a51a849165"
+}
+
+
+===================================
+
+Number:
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+count = var.instance_count
+ami = "ami-008bcc0a51a849165"
+instance_type ="t2.micro"
+}
+
+variable "instance_count" {
+description = ""
+type = number
+default = "5"
+}
+
+HISTORY:
+  1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim main.tf
+    6  terraform init
+    7  terraform plan
+    8  terraform apply
+    9  ll
+   10  vim terraform.tfstate
+   11  terraform state list
+   12  terraform destroy
+   13  vim terraform.tfstate
+   14  vim main.tf
+   15  terraform plan
+   16  terraform apply
+   17  terraform state list
+   18  terraform destroy -target="aws_instance.one[0]"
+   19  terraform state list
+   20  terraform destroy -target="aws_instance.one[1]" -target="aws_instance.one[2]"
+   21  terraform state list
+   22  terraform destroy
+   23  vim main.tf
+   24  terraform plan
+   25  terraform apply
+   26  terraform destroy
+   27  vim main.tf
+   28  terraform apply --auto-approve
+   29  terraform destroy --auto-approve
+   30  vim main.tf
+   31  terraform apply --auto-approve
+   32  vim main.tf
+   33  terraform apply --auto-approve
+   34  terraform state list
+   35  terraform destroy --auto-approve
+   36  vim main.tf
+   37  history
