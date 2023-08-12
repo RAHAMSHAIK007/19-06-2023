@@ -189,3 +189,260 @@ HISTORY:
    35  terraform destroy --auto-approve
    36  vim main.tf
    37  history
+
+
+========================================================================================
+DAY-02:
+
+Variable.tf: its a file used to store the variables block sepetrately.
+
+cat main.tf
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+
+cat varibale.tf
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+
+=====================================================================
+
+tfvars: these files will store the varible seperately, not variable block.
+
+cat main.tf
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+cat variable.tf
+variable "instance_type" {
+}
+
+cat manish.tfvars
+instance_type = "t2.medium"
+
+terraform apply --auto-approve -var-file="manish.tfvars"
+terraform apply --auto-approve -var-file="manish.tfvars"
+
+
+===============================================================
+TERRAFORM CLI: it is used to pass variables dynamically.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+variable "instance_type" {
+
+}
+
+terraform apply --auto-approve -var="instance_type=t2.micro"
+terraform destroy --auto-approve -var="instance_type=t2.micro"
+
+====================================================================================
+
+TERRAFORM LOCALS: its a block where we can define value once and use them multiple times.
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+abc = "t2.micro"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "${local.abc}"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+=================================
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+}
+
+resource "aws_vpc" "one" {
+cidr_block = "10.0.0.0/16"
+tags = {
+Name = "${local.env}-vpc"
+}
+}
+
+resource "aws_subnet" "two" {
+vpc_id = aws_vpc.one.id
+cidr_block = "10.0.0.0/24"
+tags = {
+Name = "${local.env}-subent"
+}
+}
+
+resource "aws_instance" "three" {
+subnet_id = aws_subnet.two.id
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+
+TERRAFROM GRAPH: it is used to create a flow chart for the infra creation
+terraform graph
+copy paste the content on graphwiz online
+
+===============================================
+
+TERRAFORM OUTPUT: this block is used to print the resources values.
+ex: ip addr, dns, hostname
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "three" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "prod-instance"
+}
+}
+
+output "raham" {
+value = [aws_instance.three.public_ip, aws_instance.three.private_ip, aws_instance.three.public_dns]
+}
+
+
+BUCKET:
+
+resource "aws_s3_bucket" "nikky" {
+bucket = "nikhil887766098"
+}
+
+HISTORY:
+
+   1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  ls -a
+    6  cd .aws
+    7  ll
+    8  cat config
+    9  cat credentials
+   10  vim config
+   11  cd
+   12  vim main.tf
+   13  vim variable.tf
+   14  ll
+   15  terraform init
+   16  terraform plan
+   17  terraform apply --auto-approve
+   18  terraform state list
+   19  cat terraform.tfstate
+   20  vim main.tf
+   21  vim variable.tf
+   22  vim manish.tfvars
+   23  cat main.tf
+   24  cat variable.tf
+   25  cat main.tf
+   26  cat manish.tfvars
+   27  terraform apply --auto-approve
+   28  ll
+   29  terraform apply --auto-approve -var-file="manish.tfvars"
+   30  terraform destroy --auto-approve -var-file="manish.tfvars"
+   31  rm -rf variable.tf manish.tfvars
+   32  vim main.tf
+   33  terraform plan
+   34  terraform apply --auto-approve
+   35  terraform destroy --auto-approve
+   36  terraform apply --auto-approve -var="instance_type=t2.micro"
+   37  terraform destrtoy --auto-approve -var="instance_type=t2.micro"
+   38  terraform destroy --auto-approve -var="instance_type=t2.micro"
+   39  vim main.tf
+   40  terraform apply --auto-approve
+   41  vim main.tf
+   42  terraform apply --auto-approve
+   43  terraform destroy --auto-approve
+   44  terraform apply --auto-approve
+   45  vim main.tf
+   46  cat main.tf
+   47  vim main.tf
+   48  terraform apply --auto-approve
+   49  vim main.tf
+   50  terraform apply --auto-approve
+   51  terraform state list
+   52  terraform graph
+   53  terraform destroy --auto-approve
+   54  terraform graph
+   55  terraform state list
+   56  terraform graph
+   57  vim main.tf
+   58  terraform apply --auto-approve
+   59  vim main.tf
+   60  terraform apply --auto-approve
+   61  vim main.tf
+   62  terraform apply --auto-approve
+   63  vim main.tf
+   64  terraform apply --auto-approve
+   65  vim main.tf
+   66  terraform apply --auto-approve
+   67  terraform destroy --auto-approve
+   68  cat main.tf
+   69  history
