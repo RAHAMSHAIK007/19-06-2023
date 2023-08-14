@@ -446,3 +446,105 @@ HISTORY:
    67  terraform destroy --auto-approve
    68  cat main.tf
    69  history
+======================================================================================================
+
+workspaces: used to isolate the env.
+commands on one env will not effect on another env
+
+terraform workspace list	: lists the workspaces
+terraform workspace new test	: to create and switch the workspace
+terraform workspace show 	: to show the current workspace
+terraform workspace select pro 	: to switch to prod workspace
+terraform workspace delete pro 	: to delete to prod workspace
+
+NOTE:
+1. we cannot delete the current workspace
+2. To delete workspace we need to delete resources first.
+3. we cannot delete the default workspace
+
+
+TAINT: used to recreate specifc resources among multiple resources.
+why: in RT sometimes servers will be crashed, so we need to cretae few servers so we can taint them and recreate.
+
+
+terraform state list
+terraform taint aws_instance.three
+terraform apply --auto-approve
+
+IMPORT: used to track the resource information on statefile which is created manually.
+terraform import aws_instance.four i-0f941a0d8dd1a0020
+
+Note: write aws_instance.four on main.tf and give running server id on command
+
+
+EBS AND IAM USER CODE:
+
+resource "aws_ebs_volume" "four" {
+size = 24
+availability_zone = "us-west-1a"
+tags = {
+Name = "raham-ebs"
+}
+}
+
+resource "aws_iam_user" "five" {
+name = "raham887799"
+}
+
+history:
+
+ 1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.rep                                                                                                                                                                  o
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim .aws/config
+    6  vim main.tf
+    7  terraform init
+    8  terraform plan
+    9  terraform apply --auto-approve
+   10  vim main.tf
+   11  terraform apply --auto-approve
+   12  vim main.tf
+   13  terraform apply --auto-approve
+   14  terraform workspace list
+   15  terraform workspace new test
+   16  ll
+   17  vim main.tf
+   18  terraform apply --auto-approve
+   19  terraform workspace new prod
+   20  terraform apply --auto-approve
+   21  terraform workspace show
+   22  terraform workspace select test
+   23  terraform workspace show
+   24  terraform workspace delete test
+   25  terraform destroy --auto-approve
+   26  terraform workspace select prod
+   27  terraform workspace delete test
+   28  terraform destroy --auto-approve
+   29  terraform workspace delete prod
+   30  terraform workspace select default
+   31  terraform workspace delete prod
+   32  terraform workspace list
+   33  terraform destroy --auto-approve
+   34  terraform apply --auto-approve
+   35  terraform state list
+   36  terraform taint aws_instance.three
+   37  terraform apply --auto-approve
+   38  terraform state list
+   39  terraform taint aws_vpc.one
+   40  terraform apply --auto-approve
+   41  terraform state list
+   42  vim main.tf
+   43  terraform import aws_instance.four="i-0f941a0d8dd1a0020"
+   44  terraform import aws_instance.four i-0f941a0d8dd1a0020
+   45  vim main.tf
+   46  terraform state list
+   47  vim terraform.tfstate
+   48  vim main.tf
+   49  ll
+   50  terraform apply --auto-approve
+   51  vim main.tf
+   52  terraform apply --auto-approve
+   53  terraform state list
+   54  terraform destroy --auto-approve
+   55  history
