@@ -56,3 +56,572 @@ CI JOB:
 new time -- > name -- < freestyle -- > Source Code Management: git -- > repo: https://github.com/devopsbyraham/jenkins-java-project.git -- > save -- > build now 
 
 configure -- > Build Steps  -- > invoke top level maven target -- > goal: test -- > save
+
+======================================
+
+DAY-02:
+
+VARIABLES:
+It can hold the data 
+it can be vary as the per the time.
+
+a=2
+
+USERDEFINED:
+1. LOCAL VARS: it will work inside the job
+
+b=7
+name=raham
+loc=hyderabad
+echo "the name is $name, $name is from $loc"
+
+
+2. GLOBAL VARS: outside of the job
+
+Dashboarb -- > Manage Jenkins -- > System -- >  Global properties -- > Environment variables
+Add -- > name: raham -- > add -- > loc: mumbai
+
+echo "the name is $name, $name is from $loc"
+
+PORT NUMBER CHANGING:
+cd /usr/lib/systemd/system
+vim jenkins.service -- > 67 -- > 8080 = 8084 -- ? :wq
+systemctl daemon-reload
+systemctl restart jenkins
+
+PASSWORDLESS LOGIN:
+cd /var/lib/jenkins/
+vim config.xml -- > line 7 -- > true=false -- > :wq
+systemctl restart jenkins
+
+=========================
+
+day-03:
+
+vim jenkins.sh
+
+#STEP-1: INSTALLING GIT JAVA-1.8.0 MAVEN 
+yum install git java-1.8.0-openjdk maven -y
+
+#STEP-2: GETTING THE REPO (jenkins.io --> download -- > redhat)
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+#STEP-3: DOWNLOAD JAVA11 AND JENKINS
+amazon-linux-extras install java-openjdk11 -y
+yum install jenkins -y
+update-alternatives --config java
+
+#STEP-4: RESTARTING JENKINS (when we download service it will on stopped state)
+systemctl start jenkins.service
+systemctl status jenkins.service
+
+-------------------------------------
+:wq : to save
+
+sh jenkins.sh : to execute
+
+PARAMETERS:
+Giving/passing input for the job to run.
+
+
+configure -- > This project is parameterized -- > add parameters -- > choice 
+
+1. choice : to pass input from given choices
+2. string : to pass input dyamically
+3. Muti-line string : to pass the input on multiple lines
+4. File : to build the local files
+5. Boolean: it give true or flase
+
+
+JENKINS ENVIRONMENT VARIABLES:
+these values is given by jenkins based on builds.
+it cannot be defined by user.
+
+
+echo "
+The build number is $BUILD_NUMBER, 
+The job name is $JOB_NAME
+The build url is $BUILD_URl
+the commit id is $GIT_COMMIT
+the branch name is $GIT_BRANCH
+The server is $JENKINS_URL
+"
+
+LINKED JOBS: if one job is depended on another job.
+
+create ci job git: repo -- > invoke top level maven targets -- > clean package -- > post build action -- >  Build other projects: swiggypipeline
+
+1. up stream
+2. down stream
+
+===============================================================================================================================
+
+CRON JOBS: used to schedule the works.
+
+9:15 am 05-07-2023 
+
+*	: minutes
+*	: hours
+*	: date
+*	: month
+*	: day of week (sun-0)
+
+creat ci pipeline
+
+configure -- > Build Triggers -- > Build periodically -- > * *  4 7 2 -- > save 
+(wait for one minute)
+
+POLLSCM: it will make a build if the source is changed on given time.
+
+creat ci pipeline
+
+configure -- > Build Triggers -- > Poll SCM -- > * *  4 7 2 -- > save 
+(wait for one minute)
+
+WEBHOOK: It will make a build automatically when developer commited the code.
+
+github -- > select the repo -- > settings -- > webhook -- > add webhook -- > password -- >
+Payload URL: http://44.204.25.245:8080/github-webhook/ -- > Content type: applivation/json -- > add webhook
+
+creat ci pipeline
+configure -- > Build Triggers -- > GitHub hook trigger for GITScm polling -- > save 
+
+
+THROTTLE BUILD: To restrict the builds
+
+===============================================================================================
+
+PIPELINES: 
+step by step execution of a process.
+series of events interlinked with eachother.
+
+
+types:
+1. scripted 
+2. declarative
+
+
+scripted:
+node {
+    stage('abc') {
+        echo "hai all"
+    }
+}
+
+declarative:
+pipeline {
+    agent any
+    
+    stages {
+        stage('one') {
+            steps {
+               echo "hello all good moning"
+            }
+        }
+    }
+}
+
+NOTE: SHORTCUT FOR DECLARATIVE IS PASSS.
+
+MULTI STAGE PIPELINE: it has more than one stage
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('one') {
+            steps {
+               echo "hello all good moning"
+            }
+        }
+        stage("two") {
+            steps {
+                sh 'touch file1'
+            }
+        }
+        stage('cpu') {
+            steps {
+                sh 'lscpu'
+            }
+        }
+    }
+}
+
+PIPELINE AS A CODE: we can write all the commands on single stage
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh 'touch file2'
+                sh 'lsmem'
+                sh 'lscpu'
+            }
+        }
+    }
+}
+
+MULTI STAGE PIPELINE AS A CODE: we can write multiple commands on multiple stage
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh 'touch file2'
+                sh 'lsmem'
+                sh 'lscpu'
+            }
+        }
+        stage("two") {
+            steps {
+                sh 'uname'
+                sh 'hostname -i'
+            }
+        }
+    }
+}
+
+PIPELINE AS A CODE OVER SINGLE LINE:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                sh '''
+                lscpu
+                touch file3
+                lsmem
+                '''
+            }
+        }
+        stage("two") {
+            steps {
+                sh '''
+                uname 
+                hostname -i
+                '''
+            }
+        }
+    }
+}
+
+CI CD PILINE:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("checkout") {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage("artifact") {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+
+----------------------------------------------------
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage("one") {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+                sh 'mvn compile'
+                sh 'mvn test'
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+
+==========================================================================================
+
+DAY-04:
+
+INPUT PARAMETER:
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('artifact') {
+            input {
+                message "do you want to create artifact"
+                ok "yes"
+            }
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+VARIABLES IN PIPELINE:
+
+pipeline {
+    agent any 
+    environment {
+        name = 'raham'
+        loc = "hyderabad"
+        client = 'tcs'
+    }
+    
+    stages {
+        stage("one") {
+            steps {
+                echo "hai all my name is $name, $name is from $loc, $name is working for $client"
+                echo "the build number is $BUILD_NUMBER, the job name is $JOB_NAME"
+            }
+        }
+    }
+}
+
+TO PRINT ALL THE VARS IN PIPELINE: printenv
+pipeline {
+    agent any
+
+    stages {
+        stage('ENV') {
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}
+
+
+PARAMETERS:
+
+pipeline {
+    agent any 
+    environment {
+        name = 'raham'
+        loc = "hyderabad"
+        client = 'tcs'
+    }
+    
+    parameters {
+        choice(name:'server',choices:['a','b','c'])
+    }
+    stages {
+        stage("one") {
+            steps {
+                echo "hai all my name is $name, $name is from $loc, $name is working for $client"
+                echo "the build number is $BUILD_NUMBER, the job name is $JOB_NAME"
+            }
+        }
+    }
+}
+
+POST BUILD ACTIONS: Actions that performs after build.
+
+
+pipeline {
+    agent any 
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+    post {
+        failure {
+            echo "my code is tested"
+        }
+    }
+}
+
+
+
+================================================
+
+day-08: master and slave
+
+MASTER AND SLAVE:
+it is used to distrribute the builds.
+it reduce the load on jenkins server.
+communication blw master and slave is ssh.
+
+
+SETUP:
+#STEP-1 : Create a server and install java-11
+amazon-linux-extras install java-openjdk11 -y
+
+#STEP-2: SETUP THE SLAVE SERVER
+Dashboard -- > Manage Jenkins -- > Nodes & Clouds -- > New node -- > nodename: abc -- > permanaent agent -- > save 
+
+CONFIGURATION OF SALVE:
+
+Number of executors : 3 #Number of Parallel builds
+Remote root directory : /tmp #The place where our output is stored on slave sever.
+Labels : swiggy #place the op in a particular slave
+useage: last option
+Launch method : last option 
+Host: 172.31.29.140
+Credentials -- > add -- >jenkins -- > Kind : sshusername with privatekey -- > username: ec2-user 
+privatekey : pemfile of server -- > save -- > 
+Host Key Verification Strategy: last option
+
+DASHBOARD -- > JOB -- > CONFIGURE -- > RESTRTICT WHERE THIS JOB RUN -- > LABEL: SWIGGY -- > SAVE
+
+BUILD FAILS -- > WHY -- > WE NEED TO INSTALL PACKAGES
+yum install git java-1.8.0-openjdk maven -y
+
+
+PIPLEINE CODE:
+
+pipeline {
+    agent {
+        label 'swiggy'
+    }
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/RAHAMSHAIK007/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+    post {
+        failure {
+            echo "my code is tested"
+        }
+    }
+}
+
+
+#JENKINS BACKUP:
+
+Dashboard
+Manage Jenkins
+Plugins
+available plugins 
+Periodic Backup
+install
+
+=================================================================================================
+
+
+#JENKINS BACKUP:
+
+Dashboard
+Manage Jenkins
+Plugins
+available plugins 
+Periodic Backup
+install
+
+=================================================================================================
+
+REMOTE BUILDING:
+
+craete a job -- > configure -- > Build Triggers -- > Trigger builds remotely -- > Authentication Token -- > abc -- > save 
+
+BLUE OCEAN:
+Dashboard
+Manage Jenkins
+Plugins
+Available plugin
+Blue Ocean
+=======================================================================================================
+RBAC : Role based access control
+
+STEP-1: USER CREATION
+manage jenkins -- > users -- > create users -- > rajesh: fresher & ravi: exp
+
+STEP-2: PLUGIN DOWNLOADING
+Dashboard
+Manage Jenkins
+Plugins
+Available plugin
+Role-based Authorization Strategy  
+
+STEP-3: 
+Dashboard
+Manage Jenkins
+Security
+Authorization 
+Role-based  Strategy  
+SAVE
+
+STEP-4: MANAGE AND ASSIGN USERS
+manage roles -- > add -- > fresher & exp -- > fresher: overall read & exp: admin -- > save
+assign roles -- > add user -- > rajesh: fresher & ravi: exp -- > save
+
+LIST VIEW & MY VIEW:
+To seperate the jobs as per our requirment
+
+
+
+CUSTOM WORKSPACE:
+mkdir raham
+cd /
+chown jenkins:jenkins /root/raham
+chown jenkins:jenkins /root/
+/root/raham
+
+configure -- > advance -- > Use custom workspace -- > /root/raham -- > save
+

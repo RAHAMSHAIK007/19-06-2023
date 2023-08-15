@@ -1,0 +1,770 @@
+DAY-01:
+
+ANSIBLE:
+Its a configuration management too1.
+
+Configuration= Software & Hardware props of server
+Management= Installing, deleting, updating 
+
+Automate= serve creation, Software installation, Deployment
+you can do automation in more than one server.
+
+python is dependency for ansible.
+we use yaml to write the code.
+yml=yet another markup language
+
+HISTORY:
+2012 -- > maichel dehaan -- > RedHat 
+we can use ansible in amazon linux, ubuntu, RedHat, Centos -----
+
+==============================================================================
+
+SETUP:
+Create 5 servers (1=ansible 2=dev 2=test)
+Connect all servers to mobaxterm
+
+ALL SERVERS:
+sudo -i
+1. hostnamectl set-hostname ansible/dev-1/dev-2/test-1/test-2
+sudo -i
+
+2. passwd root
+3. vim /etc/ssh/sshd_config (uncomment: 38 , no=yes: 63)
+4. systemctl restart sshd
+5. systemctl status sshd
+
+ANSIBLE SERVER:
+amazon-linux-extras install ansible2 -y
+yum install python python-pip python-dlevel -y
+vim /etc/ansible/hosts   (inventory file)  (below: 12 th line)
+
+[dev]
+172.31.81.244
+172.31.93.180
+
+[test]
+172.31.91.255
+172.31.93.101
+
+vim /etc/ansible/ansible.cfg (uncomment 14, 22)
+
+ssh-keygen  -- > enter 4 times
+ssh-copy-id root@private_ip of dev-1 -- > yes -- > password 
+ssh private_ip of dev-1
+ctrl + d
+
+ssh-copy-id root@private_ip of dev-2 -- > yes -- > password 
+ssh private_ip of dev-2
+ctrl + d
+
+ssh-copy-id root@private_ip of test-1 -- > yes -- > password 
+ssh private_ip of test-1
+ctrl + d
+
+ssh-copy-id root@private_ip of test-2 -- > yes -- > password 
+ssh private_ip of test-2
+ctrl + d
+
+
+MODES OF WORKING
+1. ADHOC COMMANDS:
+its a simple linux commands.
+we can use it for temperory works.
+this commands will be overrided.
+
+ansible all -a "ls"
+ansible all -a "touch abc.txt"
+ansible all -a "yum install git -y"
+ansible all -a "yum install java-1.8.0-openjdk -y"
+ansible all -a "yum install httpd -y"
+ansible all -a "systemctl start httpd"
+ansible all -a "systemctl status httpd"
+ansible all -a "useradd raham"
+ansible all -a "cat /etc/passwd"
+
+
+
+HISTORY
+ 2  vim /etc/ssh/sshd_config
+    3  systemctl resstart sshd
+    4  systemctl restart sshd
+    5  systemctl status sshd
+    6  amazon-linux-extras install ansible2 -y
+    7  yum install python python-pip python-dlevel -y
+    8  vim /etc/ansible/hosts
+    9  vim /etc/ansible/ansible.cfg
+   10  vim /etc/ansible/hosts
+   11  ssh-keygen
+   12  ll
+   13  ll -a
+   14  cd .ssh/
+   15  ll
+   16  cat id_rsa
+   17  cat id_rsa.pub
+   18  cd
+   19  hostname -i
+   20  ssh-copy-id root@172.31.81.244
+   21  ssh 172.31.81.244
+   22  ssh-copy-id root@172.31.93.180
+   23  ssh 172.31.93.180
+   24  ssh-copy-id root@172.31.91.255
+   25  ssh 172.31.91.255
+   26  ssh-copy-id root@172.31.93.101
+   27  ssh 172.31.93.101
+   28  ansible all -a "ls"
+   29  ansible all -a "touch file1"
+   30  ansible all -a "ls"
+   31  ansible all -a "touch abc.txt"
+   32  ansible all -a "ls"
+   33  ansible all -a "yum install git -y"
+   34  ansible all -a "git -v"
+   35  ansible all -a "yum install java-1.8.0-openjdk -y"
+   36  ansible all -a "java -version"
+   37  ansible all -a "yum install httpd -y"
+   38  ansible all -a "systemctl start httpd"
+   39  ansible all -a "systemctl status httpd"
+   40  ansible all -a "useradd raham"
+   41  ansible all -a "cat /etc/passwd"
+   42  history
+
+
+===================================================================
+
+DAY-02:
+
+2. MODULES:
+its a key-value pair. key-value pair is also called as Dictonary
+its will be reuseable.
+we have different modules for different works.
+
+
+ADHOC	: ansible all -a "yum install git -y"
+MODULE	: ansible all -m yum -a "name=git state=present"
+
+ansible all -m yum -a "name=java-1.8.0-openjdk state=present" 
+ansible all -m yum -a "pkg=tree state=present"   
+ansible all -m yum -a "pkg=tree state=absent"          [delet=absent]
+ansible all -m yum -a "name=httpd state=present"       [install=present]
+ansible all -m service -a "name=httpd state=started"   [start=started]
+ansible all -m service -a "name=httpd state=stopped"   [stop=stopped]
+ansible all -m user -a "name=vijay state=present"
+ansible all -m copy -a "src=app.yml dest=/tmp"
+
+
+3. PLAYBOOKS:
+Its a collection of modules.
+we can execute multiple modules at a single time.
+onec you write the playbook it can re reuse.
+in playbook we use yaml language.
+yaml works on key-value pair.
+and the langauge follows indentation.
+For playbooks .yml or .yaml are the extensions.
+Most of the configuration files in real time also use the yaml language.
+TOOLS: Ansible, Docker, K8s.
+
+by default ansible will execute the Gathering Facts.
+
+EXAMPLES:
+
+playbook1.yml
+
+- hosts: all
+  tasks:
+    - name: Task-1
+      yum: name=git state=present
+
+    - name: TASK-2
+      yum: name=httpd state=present
+
+    - name: TASK-3
+      service: name=httpd state=started
+
+    - name: ABCD
+      user: name=ramesh state=present
+
+ansible-playbook playbook1.yml
+======================================================================
+
+TAGS: To execute/skip single/multi tasks on a playbook.
+ansible all -m user -a "name=ramesh state=absent"
+
+
+- hosts: all
+  tasks:
+    - name: Task-1
+      yum: name=git state=present
+
+    - name: TASK-2
+      yum: name=httpd state=present
+
+    - name: TASK-3
+      service: name=httpd state=started
+
+    - name: ABCD
+      user: name=ramesh state=present
+
+NEXT:
+
+- hosts: all
+  tasks:
+    - name: Task-1
+      yum: name=git state=absent
+      tags: a
+
+    - name: TASK-2
+      yum: name=httpd state=absent
+      tags: b
+
+    - name: TASK-3
+      service: name=httpd state=started
+      tags: c
+
+    - name: ABCD
+      user: name=ramesh state=absent
+      tags: d
+
+SKIPPING SINGLE TASKS: ansible-playbook playbook1.yml --skip-tags "c"
+SKIPPING MULTI TASKS : ansible-playbook playbook1.yml --skip-tags "c,d"
+EXECUTING SINGLE TASK: ansible-playbook playbook1.yml --tags a
+EXECUTING MULTI TASK: ansible-playbook playbook1.yml --tags a,b
+
+HISTORY:
+
+45  ansible all -a "yum install git -y"
+   46  ansible all -a "yum remove git* -y"
+   47  ansible all -m yum -a "name=git state=present"
+   48  ansible all -m yum -a "name=java-1.8.0-openjdk state=present"
+   49  ansible all -a "yum remove java* -y"
+   50  ansible all -m yum -a "name=java-1.8.0-openjdk state=present"
+   51  ansible all -m yum -a "pkg=tree state=present"
+   52  ansible all -m yum -a "pkg=tree state=absent"
+   53  ansible all -a "tree --version"
+   54  ansible all -m yum -a "name=httpd state=present"
+   55  ansible all -m yum -a "name=httpd state=absent"
+   56  ansible all -m yum -a "name=httpd state=present"
+   57  ansible all -m yum -a "name=httpd state=started"
+   58  ansible all -m service -a "name=httpd state=started"
+   59  ansible all -m service -a "name=httpd state=stopped"
+   60  ansible all -m service -a "name=httpd state=started"
+   61  ansible all -m user -a "name=vijay state=present"
+   62  ansible all -a "cat /etc/passwd"
+   63  ll
+   64  vim abc.txt
+   65  ll
+   66  ansible all -m copy -a "src=abc.txt dest=/tmp"
+   67  ansible all -a "ls"
+   68  ansible all -a "cat abc.txt"
+   69  cat abc.txt
+   70  ansible all -a "ls /tmp"
+   71  ansible all -a "cat /tmp/abc.txt"
+   72  ll
+   73  vim app.yml
+   74  ll
+   75  ansible all -m copy -a "src=app.yml dest=/tmp"
+   76  ansible all -a "ls /tmp"
+   77  rm -rf *
+   78  vim playbook1.yml
+   79  ansible all -a "yum remove git* httpd* -y"
+   80  cat playbook1.yml
+   81  ansible-playbook playbook1.yml
+   82  vim playbook1.yml
+   83  cat playbook1.yml
+   84  ansible-playbook playbook1.yml
+   85  ansible all -m user -a "name=ramesh state=absent"
+   86  vim playbook1.yml
+   87  ansible-playbook playbook1.yml
+   88  vim playbook1.yml
+   89  ansible-playbook playbook1.yml --skip-tags "c"
+   90  vim playbook1.yml
+   91  ansible-playbook playbook1.yml --skip-tags "c,d"
+   92  vim playbook1.yml
+   93  cat playbook1.yml
+   94  ansible-playbook playbook1.yml --tags a,b
+   95  cat playbook1.yml
+   96  ansible-playbook playbook1.yml --tags d
+
+============================================================================
+DAY-03: 
+
+VARIABLES:
+used to store the data.
+variables will change frequently.
+
+Types:
+1. static: vars are defined inside the playbook.
+
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    z: tree
+  tasks:
+    - name: task-1
+      yum: name={{a}} state=absent
+
+    - name: task-2
+      yum: name={{b}} state=absent
+
+    - name: task-3
+      yum: name={{z}} state=absent
+
+2. dynamic: vars which defined outside of playbook.
+
+ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"
+
+
+2. LOOPS: Used to do work on itterative mode.
+
+- hosts: all
+  tasks:
+    - name: task-1
+      yum: name={{item}} state=present
+      with_items:
+        - git
+        - tree
+        - maven
+        - httpd
+        - docker
+
+- hosts: all
+  tasks:
+    - name: task-1
+      yum: name={{item}} state=absent
+      with_items:
+        - git*
+        - tree*
+        - maven*
+        - httpd*
+        - docker*
+
+
+- hosts: all
+  tasks:
+    - name: task-1
+      user: name={{item}} state=present
+      with_items:
+        - rajesh
+        - sai
+        - srinu
+        - sandy
+        - rolex
+
+- hosts: all
+  tasks:
+    - name: task-1
+      user: name={{item}} state=absent
+      with_items:
+        - rajesh
+        - sai
+        - srinu
+        - sandy
+        - rolex
+
+3. SHELL VS COMMAND VS RAW:
+
+key-value pair is not required for shell, command, raw modules.
+here we can use direct linux commands.
+
+
+- hosts: all
+  tasks:
+    - name: task-1
+      shell: yum install docker -y
+
+    - name: task-2
+      command: yum install tree -y
+
+    - name: task-3
+      raw: yum install httpd -y
+
+
+raw >> command >> shell 
+
+
+4. PIP MODULE:
+
+RedHat = yum 
+Ubuntu = apt
+Python = pip 
+
+ansible all -a "yum install pip -y"
+
+- hosts: all
+  tasks:
+    - name: Installing NumPy
+      pip:
+        name: NumPy
+
+- hosts: all
+  tasks:
+    - name: Installing Pandas
+      pip:
+        name: Pandas
+
+HISTORY:
+
+110  ansible-playbook raham.yml
+  111  ansible all -a "git -v"
+  112  ansible all -a "maven --version"
+  113  ansible all -a "mvn --version"
+  114  vim raham.yml
+  115  ansible-playbook raham.yml
+  116  vim raham.yml
+  117  ansible-playbook raham.yml
+  118  ansible all -a "mvn --version"
+  119  ansible all -a "git -v"
+  120  vim raham.yml
+  121  ansible all -a "tree -v"
+  122  vim raham.yml
+  123  cat raham.yml
+  124  ansible-playbook raham.yml --vars "a=git b=maven c=tree"
+  125  ansible-playbook raham.yml --vars "a=git, b=maven, c=tree"
+  126  ansible-playbook raham.yml --extra-vars "a=git, b=maven, c=tree"
+  127  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  128  ansible all -a "yum remove git* maven* tree* -y"
+  129  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  130  ansible-playbook raham.yml --extra-vars "a=git" "b=maven" "z=tree"
+  131  ansible-playbook raham.yml --extra-vars "a=git,b=maven,z=tree"
+  132  vim raham.yml
+  133  ansible-playbook raham.yml --extra-vars "a=git, b=maven, z=tree"
+  134  ansible-playbook raham.yml --extra-vars "a=git,b=maven,z=tree"
+  135  ansible-playbook raham.yml --extra-vars "a=git"
+  136  ansible-playbook raham.yml --extra-vars "b=maven z=tree"
+  137  ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"
+  138  vim raham.yml
+  139  ansible-playbook raham.yml --extra-vars "a=git b=maven z=tree"v
+  140  vim p
+  141  vim raham.yml
+  142  ansible-playbook raham.yml
+  143  ansible all -a "git -v"
+  144  ansible all -a "mvn --version"
+  145  ansible all -a "tree --version"
+  146  ansible all -a "httpd --version"
+  147  ansible all -a "docker --version"
+  148  ansible all -a "httpd -v"
+  149  vim raham.yml
+  150  ansible-playbook raham.yml
+  151  ansible all -a "docker --version"
+  152  ansible all -a "httpd -v"
+  153  ansible all -a "mvn --version"
+  154  vi raham.yml
+  155  cat raham.yml
+  156  ansible-playbook raham.yml
+  157  ansible all -a "cat /etc/passwd"
+  158  vim raham.yml
+  159  ansible-playbook raham.yml
+  160  ansible all -a "cat /etc/passwd"
+  161  vim raham.yml
+  162  ansible-playbook raham.yml
+  163  vim p
+  164  vim raham.yml
+  165  ansible all -a "yum install pip -y"
+  166  vim raham.yml
+  167  ansible-playbook raham.yml
+  168  vim raham.yml
+  169  ansible-playbook raham.yml
+  170  vim raham.yml
+  171  ansible-playbook raham.yml
+  172  cat raham.yml
+  173  history
+=====================================================================================
+DAY-04:
+
+cluster: group os servers
+Homogenius cluster: all nodes are similar flavours
+Hetrogenis cluster: all nodes are different flavours
+
+CONDITIONS: 
+- hosts: all
+  tasks:
+    - name: installing docker on RedHat
+      yum: name=docker state=present
+      when: ansible_os_family == "RedHat"
+
+    - name: installing docker on Ubuntu
+      apt: name=docker state=present
+      when: ansible_os_family == "Debian"
+
+HANDLERS: it will execute when called by other tasks.
+it will depends on another task.
+
+- hosts: all
+  tasks:
+    - name: installing httpd
+      yum: name=httpd state=present
+      notify: restart httpd
+  handlers:
+    - name: restart httpd
+      service: name=httpd state=restarted
+
+- hosts: all
+  tasks:
+    - name: installing docker
+      yum: name=docker state=present
+      notify: restart docker
+  handlers:
+    - name: restart docker
+      service: name=docker state=restarted
+
+
+ROLES:
+used to organize the playbooks into a directory structure
+it will encapsulate the data
+reduce the size of playbook
+
+.
+├── master.yml
+└── roles
+    ├── role1
+    │   └── tasks
+    │       └── main.yml
+    └── role2
+        └── tasks
+            └── main.yml
+
+mkdir -p roles/role1/tasks
+mkdir -p roles/role2/tasks
+
+ cat master.yml
+- hosts: all
+  roles:
+    - role2
+
+cat roles/role1/tasks/main.yml
+- name: creating users
+  user: name={{item}} state=present
+  with_items:
+    - usera
+    - userb
+    - userc
+
+cat roles/role2/tasks/main.yml
+- name: installing packages
+  yum: name={{item}} state=present
+  with_items:
+    - git
+    - maven
+    - docker
+    - tree
+
+ANSIBLE GALAXY:
+source code = github
+roles & playbooks = ansible galaxy
+
+its a place where we can use other persons playbooks and roles.
+we can download role and use them.
+
+ansible-galaxy search java : to search java roles 
+ansible-galaxy install azavea.java : to install a role
+ansible-galaxy search --author amtega : to search particular user roles
+
+HISTORY:
+ 2  vim /etc/ssh/sshd_config
+    3  sysytemctl restart sshd
+    4  systemctl restart sshd
+    5  systemctl status sshd
+    6  amazon-linux-extras install ansible2 -y
+    7  yum install python python-pip python-dlevel -y
+    8  vim /etc/ansible/hosts
+    9  vim /etc/ansible/ansible.cfg
+   10  ssh-keygen
+   11  ls -al
+   12  ssh-copy-id root@172.31.17.238
+   13  ssh-copy-id root@172.31.16.80
+   14  ssh-copy-id root@172.31.28.116
+   15  ssh-copy-id root@172.31.23.202
+   16  cd .ssh/
+   17  ll
+   18  cat known_hosts
+   19  ansible -m ping all
+   20  cd
+   21  vim playbook.yml
+   22  ansible -m setup all
+   23  ansible -m setup all | grep -i ansible_os_family
+   24  cat playbook.yml
+   25  ansible-playbook playbook.yml
+   26  vim playbook.yml
+   27  cat /etc/os-release
+   28  vim playbook.yml
+   29  ansible-playbook playbook.yml
+   30  vim playbook.yml
+   31  ansible-playbook playbook.yml
+   32  vim playbook.yml
+   33  ansible-playbook playbook.yml
+   34  vim playbook.yml
+   35  ansible-playbook playbook.yml
+   36  vim playbook.yml
+   37  ansible-playbook playbook.yml
+   38  ansible all -a "yum remove htpd* -y"
+   39  ansible all -a "yum remove httpd* -y"
+   40  ansible-playbook playbook.yml
+   41  vim playbook.yml
+   42  ansible-playbook playbook.yml
+   43  ansible all -a "yum remove docker* -y"
+   44  ansible-playbook playbook.yml
+   45  vim playbook.yml
+   46  cat playbook.yml
+   47  rm -rf *
+   48  ll
+   49  mkdir -p roles/role1/tasks
+   50  yum install tree -y
+   51  tree
+   52  mkdir -p roles/role2/tasks
+   53  tree
+   54  vim roles/role1/tasks/main.yml
+   55  vim roles/role2/tasks/main.yml
+   56  tree
+   57  vim master.yml
+   58  cat master.yml
+   59  tree
+   60  ansible-playbook master.yml
+   61  vim master.yml
+   62  ansible-playbook master.yml
+   63  tree
+   64  cat master.yml
+   65  cat roles/role1/tasks/main.yml
+   66  cat roles/role2/tasks/main.yml
+   67  vim roles/role1/tasks/main.yml
+   68  vim roles/role2/tasks/main.yml
+   69  vim master.yml
+   70  ansible-playbook p
+   71  ansible-playbook master.yml
+   72  ansible-galaxy search java
+   73  ansible-galaxy install azavea.java
+   74  ls -al
+   75  cd .ansible
+   76  ll
+   77  cd roles/
+   78  ll
+   79  ansible-galaxy search tomcat
+   80  ansible-galaxy install alikins.tomcat6
+   81  ansible-galaxy install amtega.tomcat
+   82  ll
+   83  cd amtega.tomcat
+   84  ll
+   85  cat tasks/main.yml
+   86  ansible-galaxy search --author amtega
+   87  history
+=============================================================================================
+DAY-05:
+
+STRATAGIES:
+1. Linear
+2. Free
+
+ASYNCHRONOUS ACTIONS & POLLING:
+we use this for restricting the task for particular time
+within in the requested time only the task need to be complete
+if it takes more than requested time task will be failed
+
+
+- hosts: all
+  tasks:
+    - name: install git
+      command: sleep 40
+      async: 30
+      poll: 10
+
+    - name: install maven
+      yum: name=maven state=present
+
+
+
+JINJA-2 TEMPLATE:
+Jinja-2 is a template kind of language for having a customized output
+
+DEBUG MODULE:
+IT IS USED TO PRINT THE MESSAGE
+
+- hosts: all
+  tasks:
+    - debug:
+        msg: hai all im my name is 
+
+
+ANSIBLE LOOKUPS: 
+To retrive the data from files, folders, databases.
+
+
+- hosts: all
+  vars:
+    a: "{{ lookup('file', '/root/test.txt') }}"
+  tasks:
+    - debug:
+        msg: "the content i n file is {{ a }}"
+
+
+ANSIBLE VAULT:
+it is used for encryption
+techinque: AES256
+we can restrict the user to a playbook.
+
+
+ansible-valut create creds.txt	: to create a valut
+ansible-valut edit creds.txt	: to edit a valut
+ansible-valut rekey creds.txt	: to change password a valut
+ansible-valut decrypt creds.txt	: to decrypt the valut
+ansible-valut encrypt creds.txt	: to encrypt the valut
+ansible-valut view creds.txt	: to show the content without decrypting
+
+
+HISTORY:
+ 143  ll
+  144  vim playbook.yml
+  145  ansible all -a "yum remove git* -y"
+  146  ansible-playbook playbook.yml 
+  147  vim playbook.yml 
+  148  ansible all -a "yum remove git* -y"
+  149  ansible-playbook playbook.yml 
+  150  vim playbook.yml 
+  151  ansible-playbook playbook.yml 
+  152  vim playbook.yml 
+  153  ansible-playbook playbook.yml 
+  154  vim playbook.yml 
+  155  ansible-playbook playbook.yml 
+  156  vim playbook.yml 
+  157  vim abc.txt
+  158  ll
+  159  vim playbook.yml 
+  160  ansible-playbook playbook.yml 
+  161  vim playbook.yml 
+  162  ansible-playbook playbook.yml 
+  163  vim playbook.yml 
+  164  ansible-playbook playbook.yml 
+  165  vim playbook.yml 
+  166  ansible-playbook playbook.yml 
+  167  vim playbook.yml 
+  168  ansible-playbook playbook.yml 
+  169  ll
+  170  vim playbook.yml 
+  171  ansible-playbook playbook.yml 
+  172  vim playbook.yml 
+  173  ansible-playbook playbook.yml 
+  174  vim playbook.yml 
+  175  ansible-playbook playbook.yml 
+  176  vim test.txt
+  177  ll
+  178  vim playbook.yml 
+  179  ansible-playbook playbook.yml 
+  180  vim playbook.yml 
+  181  ll
+  182  rm -rf *.txt
+  183  ll
+  184  ansible-vault create creds.txt
+  185  cat creds.txt 
+  186  ansible-vault edit creds.txt 
+  187  cat creds.txt 
+  188  ansible-vault rekey creds.txt 
+  189  ansible-vault decrypt creds.txt 
+  190  cat creds.txt 
+  191  ansible-vault encrypt creds.txt 
+  192  cat creds.txt 
+  193  ansible-vault view creds.txt 
+  194  cat creds.txt 
+  195  ll
+  196  ansible-vault encrypyt playbook.yml 
+  197  ansible-vault encrypt playbook.yml 
+  198  cat playbook.yml 
+  199  ansible-playbook playbook.yml 
+  200  ansible-vault decrypt playbook.yml 
+  201  ansible-playbook playbook.yml
