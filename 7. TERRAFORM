@@ -548,3 +548,291 @@ history:
    53  terraform state list
    54  terraform destroy --auto-approve
    55  history
+
+================================================================================================
+
+DAY-04: 
+
+LIFECYCLE (META ARGUMENTS)
+
+prevent_destroy: it will not destory our resource 
+
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_instance" "two" {
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "tokyo-instance"
+}
+lifecycle {
+prevent_destroy = false/true
+}
+}
+
+ignore_changes: it will ignore the changes done to infra.
+
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_instance" "two" {
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "tokyo-instance"
+}
+lifecycle {
+ignore_changes = [
+tags["tokyo-instance"]
+]
+}
+}
+
+
+CREATING SG:
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+DYNAMIC BLOCK: it is used to reduce the length of code and used for reusabilty of code in loop.
+
+provider "aws" {
+}
+
+locals {
+  ingress_rules = [{
+    port        = 443
+    description = "Ingress rules for port 443"
+    },
+    {
+      port        = 80
+      description = "Ingree rules for port 80"
+  },
+  {
+      port        = 8080
+      description = "Ingree rules for port 8080"
+
+  }]
+}
+
+resource "aws_instance" "ec2_example" {
+  ami                    = "ami-0c02fb55956c7d316"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.main.id]
+  tags = {
+    Name = "Terraform EC2"
+  }
+}
+
+resource "aws_security_group" "main" {
+
+  egress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "*"
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+  }]
+
+  dynamic "ingress" {
+    for_each = local.ingress_rules
+
+    content {
+      description = "*"
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  tags = {
+    Name = "terra sg"
+  }
+}
+
+
+
+FOR_EACH:
+
+provider "aws" {
+}
+
+resource "aws_instance" "two" {
+for_each = toset(["web-server", "app-server", "db-server"])
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "${each.key}"
+}
+}
+
+
+provider "aws" {
+}
+
+resource "aws_iam_user" "one" {
+count = length(var.user_name)
+name = var.user_name[count.index]
+}
+
+variable "user_name" {
+description = "*"
+type = list(string)
+default = ["rahamshaik001", "rahamshaik002", "rahamshaik003"]
+}
+
+
+provider "aws" {
+}
+
+resource "aws_iam_user" "one" {
+for_each = var.user_name
+name = each.value
+}
+
+variable "user_name" {
+description = "*"
+type = set(string)
+default = ["rahamshaik001", "rahamshaik002", "rahamshaik003", "rahamshaik003"]
+}
+
+HISTORY:
+  2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim main.tf
+    6  terraform init
+    7  vim main.tf
+    8  terraform init
+    9  terraform plan
+   10  terraform apply --auto-approve
+   11  vim main.tf
+   12  vim .aws/config
+   13  terraform apply --auto-approve
+   14  terraform state list
+   15  vim main.tf
+   16  terraform destroy --auto-approve
+   17  vim main.tf
+   18  terraform apply --auto-approve
+   19  terraform destroy --auto-approve
+   20  vim main.tf
+   21  terraform destroy --auto-approve
+   22  vim main.tf
+   23  terraform apply --auto-approve
+   24  cat terraform.tfstate | grep -i tags
+   25  cat terraform.tfstate | grep -i name
+   26  terraform refresh
+   27  cat terraform.tfstate | grep -i name
+   28  cat terraform.tfstate | grep -i security
+   29  vim terraform.tfstate
+   30  terraform refresh
+   31  vim terraform.tfstate
+   32  vim main.tf
+   33  terraform destroy --auto-approve
+   34  vim main.tf
+   35  terraform apply --auto-approve
+   36  vim main.tf
+   37  terraform apply --auto-approve
+   38  vim terraform.tfstate
+   39  terraform refresh
+   40  vim main.tf
+   41  vim terraform.tfstate
+   42  terraform refresh
+   43  vim terraform.tfstate
+   44  vim main.tf
+   45  terraform destroy --auto-approve
+   46  vim main.tf
+   47  terraform apply --auto-approve
+   48  vim main.tf
+   49  terraform apply --auto-approve
+   50  vim main.tf
+   51  terraform apply --auto-approve
+   52  vim main.tf
+   53  terraform apply --auto-approve
+   54  vim main.tf
+   55  terraform destroy --auto-approve
+   56  vim main.tf
+   57  terraform apply --auto-approve
+   58  vim main.tf
+   59  terraform apply --auto-approve
+   60  terraform state lsit
+   61  terraform state list
+   62  vim main.tf
+   63  terraform apply --auto-approve
+   64  vim main.tf
+   65  terraform apply --auto-approve
+   66  terraform destroy --auto-approve
+   67*
+   68  terraform apply --auto-approve
+   69  vim m
+   70  vim main.tf
+   71  terraform apply --auto-approve
+   72  vim main.tf
+   73  terraform apply --auto-approve
+   74  terraform destroy --auto-approve
+   75  vim main.tf
+   76  terraform apply --auto-approve
+   77  vim main.tf
+   78  terraform apply --auto-approve
+   79  terraform state list
+   80  vim main.tf
+   81  terraform apply --auto-approve
+   82  vim main.tf
+   83  terraform destroy --auto-approve
+   84  vim main.tf
+   85  terraform destroy --auto-approve
+   86  terraform apply --auto-approve
+   87  terraform destroy --auto-approve
+   88  history
