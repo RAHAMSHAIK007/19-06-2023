@@ -1,0 +1,1057 @@
+DAY-01:
+
+TERRAFORM:
+its a tool used to make infrastructure automation.
+its a free and opensource.
+its platform independent.
+it comes on year 2014.
+who: mitchel hasimoto 
+ownde: hasicorp 
+terraform is written on go language.
+We can call terraform as IAAC TOOL.
+
+HOW IT WORKS:
+terraform uses code to automate the infra.
+we use HCL : HashiCorp Configuration Language.
+
+IAAC: Infrastructure as a code.
+
+Code --- > execute --- > Infra 
+
+ADVANTGAES:
+1. Reuseable 
+2. Time saving
+3. Automation
+4. Avoiding mistakes
+5. Dry run
+
+
+INSTALLING TERRAFORM:
+
+sudo yum install -y yum-utils shadow-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
+aws configure
+
+
+TERRAFORM CONFIGURATION FILES:
+it consist code for the resources to create.
+we use HCL language.
+we use blocks to specify the code and resources.
+
+EX: *.tf, *.tfvars
+
+
+BLOCKS:
+1. PROVIDER: it consist cloud info and region info.
+2. RESOURCE: it consist resource configuration.
+3. VARIABLE: it will store the variables
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-008bcc0a51a849165"
+instance_type = "t2.micro"
+}
+
+TERRAFORM BASIC COMMANDS:
+terraform inti	: downloads provide plugins 
+terraform plan	: creates execution plan 
+terraform apply	: creates resource 
+terraform destroy: delete resource
+
+terraform state file: 
+it will store the resource information which is created by terraform.
+it will track the resource.
+name: terraform.tfstate
+terraform state list : to show the resource list in statefile
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+count = 5
+ami = "ami-008bcc0a51a849165"
+instance_type = "t2.micro"
+}
+
+
+Note: when we create muliple resources in same block we will index numbers while seeing state list.
+
+TARGET: it is used to destroy a specific resource only.
+terraform state list
+terraform destroy -target="aws_instance.one[0]"
+terraform destroy -target="aws_instance.one[1]" -target="aws_instance.one[2]"
+
+
+VARIABLES:
+
+1. string: 
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-008bcc0a51a849165"
+instance_type = var.instance_type
+}
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+----------------------------------------
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = var.ami_id
+instance_type = var.instance_type
+}
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+
+variable "ami_id" {
+description = ""
+type = string
+default = "ami-008bcc0a51a849165"
+}
+
+
+===================================
+
+Number:
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+count = var.instance_count
+ami = "ami-008bcc0a51a849165"
+instance_type ="t2.micro"
+}
+
+variable "instance_count" {
+description = ""
+type = number
+default = "5"
+}
+
+HISTORY:
+  1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim main.tf
+    6  terraform init
+    7  terraform plan
+    8  terraform apply
+    9  ll
+   10  vim terraform.tfstate
+   11  terraform state list
+   12  terraform destroy
+   13  vim terraform.tfstate
+   14  vim main.tf
+   15  terraform plan
+   16  terraform apply
+   17  terraform state list
+   18  terraform destroy -target="aws_instance.one[0]"
+   19  terraform state list
+   20  terraform destroy -target="aws_instance.one[1]" -target="aws_instance.one[2]"
+   21  terraform state list
+   22  terraform destroy
+   23  vim main.tf
+   24  terraform plan
+   25  terraform apply
+   26  terraform destroy
+   27  vim main.tf
+   28  terraform apply --auto-approve
+   29  terraform destroy --auto-approve
+   30  vim main.tf
+   31  terraform apply --auto-approve
+   32  vim main.tf
+   33  terraform apply --auto-approve
+   34  terraform state list
+   35  terraform destroy --auto-approve
+   36  vim main.tf
+   37  history
+
+
+========================================================================================
+DAY-02:
+
+Variable.tf: its a file used to store the variables block sepetrately.
+
+cat main.tf
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+
+cat varibale.tf
+
+variable "instance_type" {
+description = ""
+type = string
+default = "t2.micro"
+}
+
+=====================================================================
+
+tfvars: these files will store the varible seperately, not variable block.
+
+cat main.tf
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+cat variable.tf
+variable "instance_type" {
+}
+
+cat manish.tfvars
+instance_type = "t2.medium"
+
+terraform apply --auto-approve -var-file="manish.tfvars"
+terraform apply --auto-approve -var-file="manish.tfvars"
+
+
+===============================================================
+TERRAFORM CLI: it is used to pass variables dynamically.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = var.instance_type
+tags = {
+Name = "raham"
+}
+}
+
+variable "instance_type" {
+
+}
+
+terraform apply --auto-approve -var="instance_type=t2.micro"
+terraform destroy --auto-approve -var="instance_type=t2.micro"
+
+====================================================================================
+
+TERRAFORM LOCALS: its a block where we can define value once and use them multiple times.
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+abc = "t2.micro"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "${local.abc}"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+=================================
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+env = "prod"
+}
+
+resource "aws_vpc" "one" {
+cidr_block = "10.0.0.0/16"
+tags = {
+Name = "${local.env}-vpc"
+}
+}
+
+resource "aws_subnet" "two" {
+vpc_id = aws_vpc.one.id
+cidr_block = "10.0.0.0/24"
+tags = {
+Name = "${local.env}-subent"
+}
+}
+
+resource "aws_instance" "three" {
+subnet_id = aws_subnet.two.id
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.env}-instance"
+}
+}
+
+
+TERRAFROM GRAPH: it is used to create a flow chart for the infra creation
+terraform graph
+copy paste the content on graphwiz online
+
+===============================================
+
+TERRAFORM OUTPUT: this block is used to print the resources values.
+ex: ip addr, dns, hostname
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "three" {
+ami = "ami-07e67bd6b5d9fd892"
+instance_type = "t2.micro"
+tags = {
+Name = "prod-instance"
+}
+}
+
+output "raham" {
+value = [aws_instance.three.public_ip, aws_instance.three.private_ip, aws_instance.three.public_dns]
+}
+
+
+BUCKET:
+
+resource "aws_s3_bucket" "nikky" {
+bucket = "nikhil887766098"
+}
+
+HISTORY:
+
+   1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  ls -a
+    6  cd .aws
+    7  ll
+    8  cat config
+    9  cat credentials
+   10  vim config
+   11  cd
+   12  vim main.tf
+   13  vim variable.tf
+   14  ll
+   15  terraform init
+   16  terraform plan
+   17  terraform apply --auto-approve
+   18  terraform state list
+   19  cat terraform.tfstate
+   20  vim main.tf
+   21  vim variable.tf
+   22  vim manish.tfvars
+   23  cat main.tf
+   24  cat variable.tf
+   25  cat main.tf
+   26  cat manish.tfvars
+   27  terraform apply --auto-approve
+   28  ll
+   29  terraform apply --auto-approve -var-file="manish.tfvars"
+   30  terraform destroy --auto-approve -var-file="manish.tfvars"
+   31  rm -rf variable.tf manish.tfvars
+   32  vim main.tf
+   33  terraform plan
+   34  terraform apply --auto-approve
+   35  terraform destroy --auto-approve
+   36  terraform apply --auto-approve -var="instance_type=t2.micro"
+   37  terraform destrtoy --auto-approve -var="instance_type=t2.micro"
+   38  terraform destroy --auto-approve -var="instance_type=t2.micro"
+   39  vim main.tf
+   40  terraform apply --auto-approve
+   41  vim main.tf
+   42  terraform apply --auto-approve
+   43  terraform destroy --auto-approve
+   44  terraform apply --auto-approve
+   45  vim main.tf
+   46  cat main.tf
+   47  vim main.tf
+   48  terraform apply --auto-approve
+   49  vim main.tf
+   50  terraform apply --auto-approve
+   51  terraform state list
+   52  terraform graph
+   53  terraform destroy --auto-approve
+   54  terraform graph
+   55  terraform state list
+   56  terraform graph
+   57  vim main.tf
+   58  terraform apply --auto-approve
+   59  vim main.tf
+   60  terraform apply --auto-approve
+   61  vim main.tf
+   62  terraform apply --auto-approve
+   63  vim main.tf
+   64  terraform apply --auto-approve
+   65  vim main.tf
+   66  terraform apply --auto-approve
+   67  terraform destroy --auto-approve
+   68  cat main.tf
+   69  history
+======================================================================================================
+
+workspaces: used to isolate the env.
+commands on one env will not effect on another env
+
+terraform workspace list	: lists the workspaces
+terraform workspace new test	: to create and switch the workspace
+terraform workspace show 	: to show the current workspace
+terraform workspace select pro 	: to switch to prod workspace
+terraform workspace delete pro 	: to delete to prod workspace
+
+NOTE:
+1. we cannot delete the current workspace
+2. To delete workspace we need to delete resources first.
+3. we cannot delete the default workspace
+
+
+TAINT: used to recreate specifc resources among multiple resources.
+why: in RT sometimes servers will be crashed, so we need to cretae few servers so we can taint them and recreate.
+
+
+terraform state list
+terraform taint aws_instance.three
+terraform apply --auto-approve
+
+IMPORT: used to track the resource information on statefile which is created manually.
+terraform import aws_instance.four i-0f941a0d8dd1a0020
+
+Note: write aws_instance.four on main.tf and give running server id on command
+
+
+EBS AND IAM USER CODE:
+
+resource "aws_ebs_volume" "four" {
+size = 24
+availability_zone = "us-west-1a"
+tags = {
+Name = "raham-ebs"
+}
+}
+
+resource "aws_iam_user" "five" {
+name = "raham887799"
+}
+
+history:
+
+ 1  sudo yum install -y yum-utils shadow-utils
+    2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.rep                                                                                                                                                                  o
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim .aws/config
+    6  vim main.tf
+    7  terraform init
+    8  terraform plan
+    9  terraform apply --auto-approve
+   10  vim main.tf
+   11  terraform apply --auto-approve
+   12  vim main.tf
+   13  terraform apply --auto-approve
+   14  terraform workspace list
+   15  terraform workspace new test
+   16  ll
+   17  vim main.tf
+   18  terraform apply --auto-approve
+   19  terraform workspace new prod
+   20  terraform apply --auto-approve
+   21  terraform workspace show
+   22  terraform workspace select test
+   23  terraform workspace show
+   24  terraform workspace delete test
+   25  terraform destroy --auto-approve
+   26  terraform workspace select prod
+   27  terraform workspace delete test
+   28  terraform destroy --auto-approve
+   29  terraform workspace delete prod
+   30  terraform workspace select default
+   31  terraform workspace delete prod
+   32  terraform workspace list
+   33  terraform destroy --auto-approve
+   34  terraform apply --auto-approve
+   35  terraform state list
+   36  terraform taint aws_instance.three
+   37  terraform apply --auto-approve
+   38  terraform state list
+   39  terraform taint aws_vpc.one
+   40  terraform apply --auto-approve
+   41  terraform state list
+   42  vim main.tf
+   43  terraform import aws_instance.four="i-0f941a0d8dd1a0020"
+   44  terraform import aws_instance.four i-0f941a0d8dd1a0020
+   45  vim main.tf
+   46  terraform state list
+   47  vim terraform.tfstate
+   48  vim main.tf
+   49  ll
+   50  terraform apply --auto-approve
+   51  vim main.tf
+   52  terraform apply --auto-approve
+   53  terraform state list
+   54  terraform destroy --auto-approve
+   55  history
+
+================================================================================================
+
+DAY-04: 
+
+LIFECYCLE (META ARGUMENTS)
+
+prevent_destroy: it will not destory our resource 
+
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_instance" "two" {
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "tokyo-instance"
+}
+lifecycle {
+prevent_destroy = false/true
+}
+}
+
+ignore_changes: it will ignore the changes done to infra.
+
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_instance" "two" {
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "tokyo-instance"
+}
+lifecycle {
+ignore_changes = [
+tags["tokyo-instance"]
+]
+}
+}
+
+
+CREATING SG:
+
+provider "aws" {
+region = "ap-northeast-1"
+}
+
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+DYNAMIC BLOCK: it is used to reduce the length of code and used for reusabilty of code in loop.
+
+provider "aws" {
+}
+
+locals {
+  ingress_rules = [{
+    port        = 443
+    description = "Ingress rules for port 443"
+    },
+    {
+      port        = 80
+      description = "Ingree rules for port 80"
+  },
+  {
+      port        = 8080
+      description = "Ingree rules for port 8080"
+
+  }]
+}
+
+resource "aws_instance" "ec2_example" {
+  ami                    = "ami-0c02fb55956c7d316"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.main.id]
+  tags = {
+    Name = "Terraform EC2"
+  }
+}
+
+resource "aws_security_group" "main" {
+
+  egress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "*"
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+  }]
+
+  dynamic "ingress" {
+    for_each = local.ingress_rules
+
+    content {
+      description = "*"
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  tags = {
+    Name = "terra sg"
+  }
+}
+
+
+
+FOR_EACH:
+
+provider "aws" {
+}
+
+resource "aws_instance" "two" {
+for_each = toset(["web-server", "app-server", "db-server"])
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "${each.key}"
+}
+}
+
+
+provider "aws" {
+}
+
+resource "aws_iam_user" "one" {
+count = length(var.user_name)
+name = var.user_name[count.index]
+}
+
+variable "user_name" {
+description = "*"
+type = list(string)
+default = ["rahamshaik001", "rahamshaik002", "rahamshaik003"]
+}
+
+
+provider "aws" {
+}
+
+resource "aws_iam_user" "one" {
+for_each = var.user_name
+name = each.value
+}
+
+variable "user_name" {
+description = "*"
+type = set(string)
+default = ["rahamshaik001", "rahamshaik002", "rahamshaik003", "rahamshaik003"]
+}
+
+HISTORY:
+  2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .repo
+    3  sudo yum -y install terraform
+    4  aws configure
+    5  vim main.tf
+    6  terraform init
+    7  vim main.tf
+    8  terraform init
+    9  terraform plan
+   10  terraform apply --auto-approve
+   11  vim main.tf
+   12  vim .aws/config
+   13  terraform apply --auto-approve
+   14  terraform state list
+   15  vim main.tf
+   16  terraform destroy --auto-approve
+   17  vim main.tf
+   18  terraform apply --auto-approve
+   19  terraform destroy --auto-approve
+   20  vim main.tf
+   21  terraform destroy --auto-approve
+   22  vim main.tf
+   23  terraform apply --auto-approve
+   24  cat terraform.tfstate | grep -i tags
+   25  cat terraform.tfstate | grep -i name
+   26  terraform refresh
+   27  cat terraform.tfstate | grep -i name
+   28  cat terraform.tfstate | grep -i security
+   29  vim terraform.tfstate
+   30  terraform refresh
+   31  vim terraform.tfstate
+   32  vim main.tf
+   33  terraform destroy --auto-approve
+   34  vim main.tf
+   35  terraform apply --auto-approve
+   36  vim main.tf
+   37  terraform apply --auto-approve
+   38  vim terraform.tfstate
+   39  terraform refresh
+   40  vim main.tf
+   41  vim terraform.tfstate
+   42  terraform refresh
+   43  vim terraform.tfstate
+   44  vim main.tf
+   45  terraform destroy --auto-approve
+   46  vim main.tf
+   47  terraform apply --auto-approve
+   48  vim main.tf
+   49  terraform apply --auto-approve
+   50  vim main.tf
+   51  terraform apply --auto-approve
+   52  vim main.tf
+   53  terraform apply --auto-approve
+   54  vim main.tf
+   55  terraform destroy --auto-approve
+   56  vim main.tf
+   57  terraform apply --auto-approve
+   58  vim main.tf
+   59  terraform apply --auto-approve
+   60  terraform state lsit
+   61  terraform state list
+   62  vim main.tf
+   63  terraform apply --auto-approve
+   64  vim main.tf
+   65  terraform apply --auto-approve
+   66  terraform destroy --auto-approve
+   67*
+   68  terraform apply --auto-approve
+   69  vim m
+   70  vim main.tf
+   71  terraform apply --auto-approve
+   72  vim main.tf
+   73  terraform apply --auto-approve
+   74  terraform destroy --auto-approve
+   75  vim main.tf
+   76  terraform apply --auto-approve
+   77  vim main.tf
+   78  terraform apply --auto-approve
+   79  terraform state list
+   80  vim main.tf
+   81  terraform apply --auto-approve
+   82  vim main.tf
+   83  terraform destroy --auto-approve
+   84  vim main.tf
+   85  terraform destroy --auto-approve
+   86  terraform apply --auto-approve
+   87  terraform destroy --auto-approve
+   88  history
+
+
+==============================================
+TERRAFORM LOCAL RESOURCES:
+provider "aws" {
+}
+
+resource "local_file" "one" {
+filename = "abc.txt"
+content = "hai all this file is created by terraform"
+}
+
+
+VERSION CONSTRAINTS:
+we can change the versions of provider plugins.
+
+
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "5.10.0"
+    }
+  }
+}
+
+
+terraform {
+  required_providers {
+    local = {
+      source = "hashicorp/local"
+      version = "2.2.2"
+    }
+  }
+}
+
+==========================================
+
+s3 Backend setup: 
+it will store terraform statefile in bucket.
+when we modify the infra it will update the statefile in bucket.
+
+provider "aws" {
+}
+
+terraform {
+  backend "s3" {
+    bucket = "4pmterraformclasses9988"
+    key    = "abc"
+    region = "ap-northeast-1"
+  }
+}
+
+resource "aws_instance" "two" {
+for_each = toset(["web-server", "app-server", "db-server"])
+ami = "ami-04beabd6a4fb6ab6f"
+instance_type = "t2.micro"
+tags = {
+Name = "${each.key}"
+}
+}
+
+terraform fmt : to give format for terraform code.
+
+comments: to ignore the actions 
+
+/*resource "aws_s3_bucket" "one" {
+  bucket = "rahamey3r7t8rirg"
+}*/
+
+
+MODULES:
+a container of terraform config files.
+it is used for reusability.
+code will be written on multiple folders.
+
+cat main.tf
+module "my_instance_module" {
+        source = "./modules/instances"
+        ami = "ami-04823729c75214919"
+        instance_type = "t2.micro"
+        instance_name = " rahaminstance"
+}
+
+module "s3_module" {
+source = "./modules/buckets"
+bucket_name = "devopsherahamshaik009988"
+}
+
+cat provider.tf
+provider "aws" {
+}
+
+cat modules/instances/main.tf
+resource "aws_instance" "my_instance" {
+        ami = var.ami
+        instance_type = var.instance_type
+        tags = {
+                Name = var.instance_name
+        }
+}
+
+[root@ip-172-31-87-7 terraform]# cat modules/instances/variable.tf
+variable "ami" {
+  type          = string
+}
+
+variable "instance_type" {
+  type          = string
+}
+
+variable "instance_name" {
+  description   = "Value of the Name tag for the EC2 instance"
+  type          = string
+}
+
+cat modules/buckets/main.tf
+resource "aws_s3_bucket" "b" {
+bucket = var.bucket_name
+}
+
+cat modules/buckets/variable.tf
+variable "bucket_name" {
+type = string
+}
+
+
+
+HISTORY:
+
+  89  vim main.tf
+   90  terraform init
+   91  terraform plan
+   92  terraform apply --auto-approve
+   93  ll
+   94  cat abc.txt
+   95  terraform destroy --auto-approve
+   96  vim main.tf
+   97  terraform init
+   98  vim main.tf
+   99  terraform init -upgrade
+  100  vim main.tf
+  101  terraform init -upgrade
+  102  vim main.tf
+  103  terraform init -upgrade
+  104  vim main.tf
+  105  terraform init -upgrade
+  106  vim main.tf
+  107  terraform init -upgrade
+  108  vim main.tf
+  109  terraform init -upgrade
+  110  ll
+  111  vim main.tf
+  112  terraform init -upgrade
+  113  vim main.tf
+  114  terraform init -upgrade
+  115  terraform apply --auto-approve
+  116  cat -n terraform.tfstate
+  117  ll
+  118  cat -n terraform.tfstate.backup
+  119  terraform state list
+  120  terraform destroy --auto-approve
+  121  vim main.tf
+  122  terraform apply --auto-approve
+  123  terraform init -reconfigure
+  124  terraform apply --auto-approve
+  125  terraform init -migrate-state
+  126  ll
+  127  terraform apply --auto-approve
+  128  terraform destroy --auto-approve
+  129  terraform replace
+  130  terraform
+  131  terraform replace -h
+  132  vim main.tf
+  133  terraform apply --auto-approve
+  134  vim main.tf
+  135  cat main.tf
+  136  terraform fmt
+  137  cat main.tf
+  138  vim main.tf
+  139  terraform fmt
+  140  cat main.tf
+  141  vim main.tf
+  142  cat main.tf
+  143  terraform fmt
+  144  cat main.tf
+  145  terraform state list
+  146  terraform destroy --auto-approve
+  147  vim main.tf
+  148  vim provider.tf
+  149  cat main.tf
+  150  mkdir -p /modules/instances
+  151  mkdir -p /modules/buckets
+  152  yum install tree -y
+  153  tree
+  154  ll
+  155  mkdir -p modules/buckets
+  156  mkdir -p modules/instances
+  157  ll
+  158  tree
+  159  vim modules/instances/main.tf
+  160  vim modules/instances/variable.tf
+  161  tree
+  162  cat m
+  163  cat main.tf
+  164  vim modules/buckets/main.tf
+  165  vim modules/buckets/variable.tf
+  166  tree
+  167  cat main.tf
+  168  terraform apply --auto-approve
+  169  vim m
+  170  vim provider.tf
+  171  terraform apply --auto-approve
+  172  terraform init -upgrade
+  173  terraform apply --auto-approve
+  174  terraform state list
+  175  terraform destroy --auto-approve
+  176  history

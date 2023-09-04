@@ -1,0 +1,862 @@
+DAY-01:
+MONOLITHIC: multiple services are deployed on single server with single database.
+
+MICRO SERVICES: multiple services are deployed on multiple servers with multiple database.
+
+CONTAINERS:
+its same as a server/vm.
+it will not have any operating system.
+os will be on images.
+(SERVER=AMI, CONTAINER=IMAGE)
+
+DOCKER: 
+Its an free & opensource tool.
+used to create, run & deploy applications containers.
+it is introduced on 2013 by solomenhykes & sebastian phal.
+We used GO laguage to develope the docker.
+here we write files on YAML.
+before docker user faced lot of problems, but after docker there is no issues with the application.
+
+
+CONTAINERIZATION:
+Process of packing an application with its dependencies.
+ex: PUBG
+
+os level of virtualization.
+
+VIRTUALIZATION:
+able to create resouce with our hardware properties.
+
+ARCHITECTURE & COMPONENTS:
+client: it will interact with user
+user gives commands and it will be executed by docker client
+
+daemon: manages the docker components(images, containers, volumes)
+
+host: where we install docker (ex: linux, windows, macos)
+
+Registry: manages the images.
+
+ARCHITECTURE OF DOCKER:
+yum install docker -y    #client
+systemctl start docker	 #client,Engine
+systemctl status docker
+
+
+
+
+
+
+COMMANDS:
+docker pull ubuntu	: pull ubuntu image
+docker images		: to see list of images
+docker run -it --name cont1 ubuntu : to create a container
+-it (interactive) - to go inside a container
+cat /etc/os-release	: to see os flavour
+
+
+apt update -y	: to update 
+redhat=yum
+ubuntu=apt
+without update we cant install any pkg in ubuntu
+
+apt install git -y
+apt install apache2 -y
+service apache2 start
+service apache2 status
+
+docker p q	: to exit container
+docker ps -a	: to list all containers
+
+
+HISTORY:
+
+ 1  yum install docker -y
+    2  docker version
+    3  systemctl start docker
+    4  systemctl status docker
+    5  docker version
+    6  docker pull ubuntu
+    7  docker images
+    8  docker run -it --name cont1 ubuntu
+    9  docker run -it --name cont2 -p 80 ubuntu
+   10  docker ps -a
+   11  history
+
+==============================
+
+DAY-02:
+
+DAY-02:
+Dockerfile:
+It automates the image creation.
+it will save time and memory.
+in Docker file D is capital.
+Components must be on Captial.
+
+FROM 	: Base image
+RUN	: To execute command (during image creation)
+CMD	: To execute command (during container creation)
+COPY	: Copies loca1 file to container
+ADD	: Copies internet file to container
+WORKDIR	: Dircetly go to target folder
+LABEL	: To attach lables(name, email)
+ENV	: To define variables inside container
+ARGS	: To define variables outside container
+ENTRYPOINT: high priority then CMD
+
+EXAMPLE-1:
+FROM ubuntu
+RUN apt update -y
+RUN apt install git -y
+RUN apt install apache2 -y
+RUN service apache2 start
+CMD apt install maven -y
+
+EXAMPLE-2:
+FROM ubuntu
+RUN apt update -y
+RUN apt install git -y
+RUN apt install apache2 -y
+RUN service apache2 start
+COPY abc.txt /tmp
+ADD https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz /tmp
+
+
+COMMANDS:
+Build	: docker build -t image:v1 dockerfile-path
+Inspect : docker inspect cont1
+docker inspect cont4 | grep -i email
+
+docker ps	: running containers
+docker ps -a	: all containers
+docker ps -a -q	: all containers ids
+
+docker stop cont1: to stop container1
+docker kill cont1: to stop container1
+
+
+STOP VS KILL:
+stop: it will take some time to stop the process running inside container
+kill: it wont take time to stop the process running inside container
+
+docker start cont1: to stop container1
+docker top cont1
+
+
+-it: interactive -- > go inside the container
+-d : detach 	 -- > come out of container
+
+
+DEPLOYMENT:
+
+Dockerfile
+
+FROM ubuntu
+RUN apt-get update -y
+RUN apt-get install apache2 -y
+COPY index.html /var/www/html/
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+
+
+index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2>DevOps By Raham V:2.0</h2>
+
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+
+<div id="id01" class="modal">
+  
+  <form class="modal-content animate" action="/action_page.php" method="post">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <img src="img_avatar2.png" alt="Avatar" class="avatar">
+    </div>
+
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" required>
+
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+        
+      <button type="submit">Login</button>
+      <label>
+        <input type="checkbox" checked="checked" name="remember"> Remember me
+      </label>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+      <span class="psw">Forgot <a href="#">password?</a></span>
+    </div>
+  </form>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
+
+
+docker build -t image:v1 .
+docker run -itd --name cont1 -p 90:80 image:v1 
+
+HISTORY:
+
+  1  docker version
+    2  docker --version
+    3  docker version
+    4  vim Dockerfile
+    5  ll
+    6  docker build -t raham:v1 .
+    7  vim Dockerfile
+    8  docker build -t raham:v1 .
+    9  docker images
+   10  docker run -it --name cont1 raham:v1
+   11  docker ps -a
+   12  vim Dockerfile
+   13  docker build -t raham:v1 .
+   14  docker run -it --name cont2 raham:v1
+   15  vim Dockerfile
+   16  ll
+   17  cat>abc.txt
+   18  ll
+   19  vim Dockerfile
+   20  docker ps -a
+   21  vim Dockerfile
+   22  docker build -t raham:v1 .
+   23  docker run -it --name cont3 raham:v1
+   24  vim Dockerfile
+   25  docker build -t raham:v1 .
+   26  docker run -it --name cont4 raham:v1
+   27  docker inspect cont4
+   28  docker inspect cont4 | grep -i email
+   29  docker inspect cont4
+   30  docker inspect cont4 | grep -i email
+   31  vim Dockerfile
+   32  docker build -t raham:v1 .
+   33  docker run -it --name cont5 raham:v1
+   34  docker ps -a
+   35  docker ps
+   36  docker ps -a -q
+   37  docker ps
+   38  docker stop cont5
+   39  docker ps
+   40  docker ps -a
+   41  docker ps
+   42  docker kill cont4
+   43  docker ps
+   44  docker stop cont3
+   45  docker kill cont1
+   46  docker ps
+   47  docker ps -a
+   48  docker start cont5
+   49  docker ps -a
+   50  docker start cont4
+   51  docker ps -a
+   52  docker ps
+   53  docker top cont5
+   54  rm -rf *
+   55  vim Dockerfile
+   56  ll
+   57  vim index.html
+   58  docker build -t raham:v1 .
+   59  cat Dockerfile
+   60  docker run -itd --name appcont -p 90:80 raham:v1
+   61  docker run -itd --name appcont2 -p 95:80 raham:v1
+   62  docker run -itd --name appcont3 -p 92:80 raham:v1
+   63  history
+=============================================
+
+DAY-03: VOLUMES
+
+DAY-03:
+VOLUMES:
+It is used to store data inside container.
+volume is a simple directory inside container.
+containers uses host resources (cpu, ram, rom).
+single volume can be shared to multiple containers.
+ex: cont-1 (vol1)  --- > cont2 (vol1) & cont3 (vol1) & cont4 (vol1)
+at a time we can share single volume to single container only.
+
+
+3 WAYS:
+1 WAY: 
+
+Dockerfile:
+FROM ubuntu
+VOLUME ["/vol1"]
+
+docker build -t swiggy:v1 .
+docker run -it --name cont1 swiggy:v1
+
+cd /vol
+touch file{1..5}
+
+ctrl p q
+
+docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+ cd /vol1
+ll
+
+ctrl p q
+
+==============================================================================
+
+METHOD-2:
+
+docker run -it --name cont3 -v vol2 ubuntu
+docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu
+
+============================================================================
+
+METHOD-3: MOUNT VOLUMES
+
+Here volume we can create locally and attach to container
+
+docker volume ls	: to list the volumes
+docker volume create vol3 : to create a volume
+docker volume inspect vol3 : to get information about volume
+cd /var/lib/docker/volumes/vol3/_data
+touch file{1..10}
+
+docker run -it --name cont5 --mount source=vol3,destination=/vol3 ubuntu
+
+docker volume rm vol4: to remove the volumes.
+docker volume prune: to remove all unused volumes.
+
+NOTE: we cannot remove volume which have data.
+
+UP TO NOW WE SHARE VOLUMES FORM CONTAINER TO CONTAINER
+NOW WE ARE GOING TO SHARE VOLUMES FORM LOCAL TO CONTAINER
+
+
+
+LOCAL -- CONTAINER
+
+touch file{1..10}
+docker run -it --name cont6 -v /root:/abcd ubuntu
+
+
+SYSTEM:
+docker system df : to show componets info (short)
+docker system df -v : to show componets info (long)
+docker system events:
+
+
+JENKINS SETUP ON DOCKER:
+
+docker run -it --name jenkinscont -p 8080:8080 jenkins/jenkins:lts
+
+HISTORY:
+
+ 41  yum install docker -y
+   42  docker version
+   43  systemctl start docker
+   44  systemctl status docker
+   45  docker version
+   46  vim Dockerfile
+   47*
+   48  docker images
+   49*
+   50  docker ps
+   51  docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
+   52  docker attach cont1
+   53  cat Dockerfile
+   54  docker run -it --name cont3 -v vol2 ubuntu
+   55  docker run -it --name cont4 --volumes-from cont3 --privileged=true ubuntu
+   56  docker volume ls
+   57  docker volume create vol3
+   58  docker volume ls
+   59  docker volume inspect vol3
+   60  cd /var/lib/docker/volumes/vol3/_data
+   61  touch local{1..10}
+   62  ll
+   63  docker run -it --name cont5 --mount source=vol3,destination=/vol3 ubuntu
+   64  cd
+   65  docker volume ls
+   66  docker volume create vol4
+   67  docker volume ls
+   68  docker volume inspect vol4
+   69  docker volume rm vol4
+   70  docker volume ls
+   71  docker volume
+   72  touch file{1..10}
+   73  ll
+   74  docker run -it --name cont6 -v /root:/abcd ubuntu
+   75  docker system
+   76  docker system df
+   77  docker system df -v
+   78  docker system events
+   79  docker run -it --name jenkinscont -p 8080:8080 jenkins/jenkins:lts
+   80  docker ps -a
+   81  docker ps -a -q
+   82  docker stop $(docker ps -a -q)
+   83  docker ps -a
+   84  docker rm $(docker ps -a -q)
+   85  docker ps -a
+   86  docker ps
+
+===========================================
+
+DAY-04:
+
+
+DOCKER COMPOSE:
+it is a tool to create,run and deploy mutiple services/containers at as single time.
+we need to write compose file.
+it is on yaml format.
+the default file name is docker-compose.yml (or) compose.yml (yaml=yml).
+here we can mention all the services of a app (frontend and backend)
+in compose we can mentin: images, volumes, ports, nlw -----
+
+INSTALLATION:
+
+vim compose.sh
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+ls /usr/local/bin/
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+sh compose.sh
+
+
+vim docker-compose.yml
+
+version: '3'
+services:
+  movies:
+    image: movies:v1
+    ports:
+      - "84:80"
+  train:
+    image: train:v1
+    ports:
+      - "85:80"
+  dth:
+    image: dth:v1
+    ports:
+      - "86:80"
+  recharge:
+    image: recgarge:v1
+    ports:
+      - "87:80"
+
+docker-compose up -d	: to create & run all services
+docker-compose stop	: to stop all services
+docker-compose start	: to start all services
+docker-compose pause	: to pause all services
+docker-compose unpause	: to unpause all services
+docker-compose ps	: to show compose containers only
+docker-compose images	: to show compose images only
+docker-compose logs	: to show logs of compose 
+docker-compose down	: to  stop & destroy all services
+
+DOCKER-HUB:
+to store images on internet.
+if the repo is public anyone can access the image.
+
+S-1: Crete DockerHub account 
+S-2: Create a repo
+S-3: Tagging image (docker tag movies:v1 saiteja9573/movies)
+S-4: DOCKER LOGIN
+S-4: Pushing (docker push saiteja9573/movies:latest)
+
+
+create -- > tag -- > push 
+
+
+HISTORY:
+
+   1  yum install docker -y
+    2  docker version
+    3  systemctl start docker
+    4  docker version
+    5  systemctl stop docker
+    6  systemctl status docker
+    7  docker pull ubuntu
+    8  systemctl start docker
+    9  systemctl status docker
+   10  vim Dockerfile
+   11  vim index.html
+   12  docker build -t movies:v1 .
+   13  docker images
+   14  vim index.html
+   15  docker build -t train:v1 .
+   16  vim index.html
+   17  docker build -t dth:v1 .
+   18  docker images
+   19  vim index.html
+   20  docker build -t recharge:v1 .
+   21  docker images
+   22  docker run -itd --name cont1 -p 80:80 movies:v1
+   23  docker run -itd --name cont2 -p 81:80 train:v1
+   24  docker run -itd --name cont3 -p 82:80 dth:v1
+   25  docker run -itd --name cont4 -p 83:80 recharge:v1
+   26  docker ps
+   27  vim docker-compose.yml
+   28  docker ps
+   29  docker-compose up
+   30  vim compose.sh
+   31  sh compose.sh
+   32  docker-compose --version
+   33  cat docker-compose.yml
+   34  vim docker-compose.yml
+   35  docker-compose up -d
+   36  docker ps -a
+   37  vim docker-compose.yml
+   38  docker images
+   39  docker run -itd --name cont5 -p 88:80 dth:v1
+   40  vim docker-compose.yml
+   41  docker run -itd --name cont5 -p 89:80 recharge:v1
+   42  docker run -itd --name cont6 -p 89:80 recharge:v1
+   43  vim docker-compose.yml
+   44  docker-compose up -d
+   45  vim docker-compose.yml
+   46  docker-compose up -d
+   47  cat docker-compose.yml
+   48  docker-compose stop
+   49  docker ps -a
+   50  docker-compose start
+   51  docker ps -a
+   52  docker-compose pause
+   53  docker ps -a
+   54  docker-compose unpause
+   55  docker ps -a
+   56  docker-compose ps
+   57  docker-compose images
+   58  docker-compose logs
+   59  docker-compose rm
+   60  docker-compose kill
+   61  docker-compose start
+   62  docker-compose ps
+   63  docker-compose down
+   64  docker-compose ps
+   65  vim docker-compose.yml
+   66  docker-compose uo -d
+   67  docker-compose up -d
+   68  docker-compose down
+   69  docker images
+   70*
+   71  /
+   72  docker tag movies:v1 saiteja9573/movies
+   73  docker images
+   74  docker push saiteja9573/movies:latest
+   75  docker login
+   76  docker push saiteja9573/movies:latest
+   77  docker images
+   78  docker rmi saiteja9573/movies -f
+   79  docker images
+   80  docker rmi movies:v1 -f
+   81  docker images
+   82  docker-compose up -d
+   83  vim docker-compose.yml
+   84  docker-compose up -d
+   85  docker images
+   86  docker tag dth:v1 saiteja9573/dth
+   87  docker push saiteja9573/dth
+   88  history
+
+=======================================================================================
+
+DOCKER SWARM: 
+Its an orchestration tool.
+manages mutiple containers on multiple servers.
+worker nodes will follow what manager node instructs.
+we need to enable docker engine.
+
+SETUP:
+Create 3 server with all traffic
+
+yum install docker -y
+systemctl start docker
+systemctl status docker
+
+hostnamectl set-hostname manager
+hostnamectl set-hostname worker-1
+hostnamectl set-hostname worker-2
+
+sudo -i
+
+docker swarm init --advertise-addr (provate-ip-manager)
+copy token to worker nodes
+docker node ls
+
+SERVICES:
+its a feature of an application.
+we can crearte replicas for service.
+if we delete one conatiner it will create another one immedieatly.
+
+docker service create --name movies --replicas 3 --publish 80:80 saiteja9573/movies:latest
+docker service ls
+docker service create --name train --replicas 5 --publish 81:80 saiteja9573/train:latest
+docker service scale movies=10
+docker service scale train=10
+docker service ps train
+docker service ps movies
+docker service logs train
+docker service logs movies
+docker service inspect train
+
+
+DOCKER NETWORK:
+It is used to establish communication blw two containers
+
+Docker networks are used to make a communication between the multiple containers that are running on same or different docker hosts. We have different types of docker networks.
+Bridge Network
+Host Network
+None network
+Overlay network
+
+BRIDGE NETWORK: It is a default network that container will communicate with each other within the same host.
+
+HOST NETWORK: When you Want your container IP and ec2 instance IP same then you use host network
+
+NONE NETWORK: When you don’t Want The container to get exposed to the world, we use none network. It will not provide any network to our container.
+
+OVERLAY NETWORK: Used to communicate containers with each other across the multiple docker hosts.
+
+To create a network: docker network create network_name
+To see the list: docker network ls
+To delete a network: docker network rm network_name
+To inspect: docker network inspect network_name
+To connect a container to the network: docker network connect network_name container_id/name
+apt install iputils-ping -y : command to install ping checks
+To disconnect from the container: docker network disconnect network_name container_name
+To prune: docker network prune
+
+HISTORY:
+
+    1  docker swarm inti --advertise-addr 172.31.86.226
+    2  docker swarm init --advertise-addr 172.31.86.226
+    3  docker node ls
+    4  docker service create --name movies --replicas 3 --publish 80:80 saiteja9573/movies:latest
+    5  docker ps
+    6  docker service ls
+    7  docker service create --name train --replicas 5 --publish 81:80 saiteja9573/train:latest
+    8  docker service ls
+    9  docker service movies scale=10
+   10  docker service scale movies=10
+   11  docker service ls
+   12  docker service scale train=10
+   13  docker service ls
+   14  docker service ps train
+   15  docker kill ducjikicevgq
+   16  docker kill train.10
+   17  docker stop train.10
+   18  docker stop ducjikicevgq
+   19  docker service ps train
+   20  ducjikicevgq   train.10   saiteja9573/train:latest   worker-1   Running         Running 3 minutes ago
+   21  docker ps
+   22  docker kill 5cc6bf6562e4
+   23  docker ps
+   24  docker kill 21e214ef98ad
+   25  docker ps
+   26  docker service ps train
+   27  docker service ps movies
+   28  docker service ls
+   29  docker service scale train=3
+   30  docker service ls
+   31  docker service scale movies=3
+   32  docker service movies logs
+   33  docker movies logs
+   34  docker service train logs
+   35*
+   36  docker service logs train
+   37  docker service logs movie
+   38  docker service logs movies
+   39  docker service inspect train
+   40  docker service rm train
+   41  docker service ps train
+   42  docker service ls
+   43  docker service rm movies
+   44  docker service ls
+   45  docker network ls
+   46  docker run -d cont1 ubuntu
+   47  docker run -d --name cont1 ubuntu
+   48  docker run -d --name cont2 ubuntu
+   49  docker ps -a
+   50  docker rm 7bce36c48ee7
+   51  docker rm e75ce13372fa
+   52  docker ps -a
+   53  docker node ls
+   54  docker node rm 5nn092n8l0r7x60ns7kq4xsff
+   55  docker node ls
+   56  docker node rm gs8tcv08bf2e6bb670pyktjpy
+   57  docker node ls
+   58  docker node rm swlbtpur3qqn0irm1w7ftauhv
+   59  docker node rm gs8tcv08bf2e6bb670pyktjpy
+   60  docker node ls
+   61  docker node rm swlbtpur3qqn0irm1w7ftauhv
+   62  docker node ls
+   63  docker create network raham
+   64  docker network create raham
+   65  docker network ls
+   66*
+   67  docker run -itd --name cont2 ubuntu
+   68  docker run -itd --name cont1 ubuntu
+   69  docker network connect raham cont1
+   70  docker network inspect raham
+   71  docker network connect raham cont2
+   72  docker network inspect raham
+   73  docker network ls
+   74  docker network rm 8d55b0dc3f60
+   75  docker network disconnect raham cont2
+   76  docker network disconnect raham cont1
+   77  docker network inspect raham
+   78  docker network rm 8d55b0dc3f60
+   79  docker swarm join-token manager
+   80  docker swarm join-token worker
+   81  history
+[root@manager ~]#
+
+
+PORTAINER:
+Must have swarm mode and all ports enable with docker engine
+
+curl -L https://downloads.portainer.io/ce2-16/portainer-agent-stack.yml -o portainer-agent-stack.yml
+docker stack deploy -c portainer-agent-stack.yml portainer
+docker ps
+public-ip of swamr master:9000
